@@ -281,13 +281,13 @@ export const LabAssistantQueue: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Justification Box */}
-                <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs">
-                  <span className="text-slate-400 font-semibold block mb-1 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-indigo-400" />
+                {/* Justification Box - Elevated GunanQ Light & Dark Container */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/60 text-xs">
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold block mb-1 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-sky-600 dark:text-indigo-400" />
                     <span>Academic Justification:</span>
                   </span>
-                  <p className="text-slate-300 leading-relaxed">{item.justification}</p>
+                  <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-normal">{item.justification}</p>
                 </div>
               </div>
             );
