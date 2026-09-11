@@ -8,9 +8,14 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4+-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Vite](https://img.shields.io/badge/Vite-6.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![WebSockets](https://img.shields.io/badge/WebSockets-Real--Time-E0234E?style=for-the-badge&logo=socketdotio&logoColor=white)](https://fastapi.tiangolo.com/advanced/websockets/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://smart-campus-equipment-lab-booking-system-55gbkjncj.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://smart-campus-equipment-lab-booking.onrender.com/docs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 **An enterprise-grade, full-stack laboratory resource management and hardware booking platform engineered for universities and academic research institutes.**
+
+🔗 **Live Application**: [https://smart-campus-equipment-lab-booking-system-55gbkjncj.vercel.app](https://smart-campus-equipment-lab-booking-system-55gbkjncj.vercel.app)  
+📖 **Interactive API Docs**: [https://smart-campus-equipment-lab-booking.onrender.com/docs](https://smart-campus-equipment-lab-booking.onrender.com/docs)
 
 [Key Features](#-key-features) • [System Architecture](#-system-architecture) • [Live Demo Credentials](#-pre-seeded-demo-accounts) • [Campus Directory](#-campus-lab-directory--floor-mapping) • [API Reference](#-api-endpoints-summary) • [SE Lab Curriculum Mapping](#-software-engineering-lab-curriculum-mapping) • [Local Setup](#-setup--running-locally)
 
