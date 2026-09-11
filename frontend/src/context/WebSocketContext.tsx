@@ -38,7 +38,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const connectWs = () => {
     try {
-      const socket = new WebSocket('ws://localhost:8000/ws/slots');
+      const defaultWs = window.location.protocol === 'https:' ? 'wss://localhost:8000/ws/slots' : 'ws://localhost:8000/ws/slots';
+      const wsUrl = import.meta.env.VITE_WS_URL || defaultWs;
+      const socket = new WebSocket(wsUrl);
       wsRef.current = socket;
 
       socket.onopen = () => {
