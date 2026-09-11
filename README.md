@@ -1,181 +1,252 @@
-# Smart Campus Equipment & Lab Booking System
+# 🏛️ Smart Campus Equipment & Lab Booking System
 
-An enterprise-grade, full-stack web application engineered to replace manual paper registers used by academic institutions to book shared lab equipment (IoT kits, GPU workstations, robotics kits) and lab workstations.
+<div align="center">
+
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-19.0+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4+-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Vite](https://img.shields.io/badge/Vite-6.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![WebSockets](https://img.shields.io/badge/WebSockets-Real--Time-E0234E?style=for-the-badge&logo=socketdotio&logoColor=white)](https://fastapi.tiangolo.com/advanced/websockets/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+**An enterprise-grade, full-stack laboratory resource management and hardware booking platform engineered for universities and academic research institutes.**
+
+[Key Features](#-key-features) • [System Architecture](#-system-architecture) • [Live Demo Credentials](#-pre-seeded-demo-accounts) • [Campus Directory](#-campus-lab-directory--floor-mapping) • [API Reference](#-api-endpoints-summary) • [SE Lab Curriculum Mapping](#-software-engineering-lab-curriculum-mapping) • [Local Setup](#-setup--running-locally)
+
+</div>
 
 ---
 
-## Architecture Overview
+## 📌 Executive Summary
 
+Traditional university laboratories rely on fragmented paper logbooks, manual registers, and ad-hoc emails. This leads to double-booking conflicts, unverified student claims, equipment hoarding, and zero tracking of damaged or overdue units.
+
+**Smart Campus Equipment & Lab Booking System** solves these challenges through an end-to-end digital OS that combines **conflict-free time-slot reservations**, **real-time WebSocket updates**, **automated student enrollment verification**, **predictive maintenance escalation**, and **interactive executive analytics**.
+
+---
+
+## ✨ Key Features
+
+### ⚡ 1. Conflict-Free Slot Booking Engine
+* **Mathematical Overlap Detection**: Rejects any booking attempting `(start_time < existing.end_time) AND (end_time > existing.start_time)` across all active reservations (`pending`, `approved`, `checked_out`, `overdue`).
+* **Microsecond Race-Condition Guard**: Instant `HTTP 409 Conflict` response with real-time feedback.
+
+### 🔄 2. Live WebSocket Slot Synchronization (`/ws/slots`)
+* Broadcasts real-time slot state changes (lock, approve, checkout, return) to all connected clients.
+* Instant visual timeline updates on interactive calendars without requiring a page refresh.
+
+### 🛡️ 3. Official Institutional Roster Verification
+* Cross-checks student registration details against pre-seeded academic enrollment registries.
+* Automatically flags unverified student numbers and highlights matching cohort, department, and official student names in the Admin Approvals Queue.
+
+### 📦 4. Finite State Machine & Immutable Audit Trail
+* Robust state transitions: `AVAILABLE` ➔ `BOOKED` ➔ `ISSUED` ➔ `RETURNED` (or `OVERDUE` / `UNDER_MAINTENANCE`).
+* Full lifecycle logging recording actor user IDs, handover condition notes, inspection remarks, and timestamps.
+
+### ⏱️ 5. Automated Background Worker (APScheduler)
+* **24-Hour Return Reminders**: Scans reservations every 60 seconds and dispatches reminder notifications to students.
+* **Overdue Escalations**: Automatically flags unreturned units past deadline, alerts lab assistants, and triggers overdue telemetry.
+
+### 🎨 6. GunanQ-Inspired Modern Design System
+* Pure white card elevations with ambient lighting in **Light Mode** and deep slate glassmorphism in **Dark Mode**.
+* Distinguishable categorical navigation icons with interactive hover pop-out physics.
+* High-contrast typography, rubric-style status pills, and translucent frosted-glass modal scrims.
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Client Tier [Frontend - React 19 + TypeScript + Vite]
+        UI[Tailwind CSS UI / GunanQ Design System]
+        State[Theme & Auth Context State]
+        WS_Client[WebSocket Real-Time Client]
+    end
+
+    subgraph Gateway Tier [FastAPI REST & Socket Gateway]
+        Router[API Routers /api/v1]
+        AuthGuard[JWT Auth & RBAC Middleware]
+        WS_Hub[WebSocket Connection Hub /ws/slots]
+        ConflictEngine[Conflict Validation Engine]
+    end
+
+    subgraph Service Tier [Background Services & Schedulers]
+        Scheduler[APScheduler Background Daemon]
+        ReminderJob[24h Return Reminder Service]
+        OverdueJob[Automated Overdue Escalation]
+    end
+
+    subgraph Persistence Tier [Data & Storage Layer]
+        ORM[SQLAlchemy ORM 2.0]
+        DB[(SQLite / PostgreSQL DB)]
+        Registry[(Academic Student Registry)]
+    end
+
+    UI --> Router
+    UI <--> WS_Client
+    WS_Client <--> WS_Hub
+    Router --> AuthGuard
+    AuthGuard --> ConflictEngine
+    ConflictEngine --> ORM
+    Scheduler --> ReminderJob
+    Scheduler --> OverdueJob
+    ReminderJob --> ORM
+    OverdueJob --> WS_Hub
+    ORM --> DB
+    AuthGuard --> Registry
 ```
-                      +---------------------------------------+
-                      | React 19 + TypeScript + Tailwind CSS  |
-                      |   Vite + Framer Motion + Recharts     |
-                      +-------------------+-------------------+
-                                          |
-                        HTTP / REST (JWT) | WebSocket (/ws/slots)
-                                          v
-                      +-------------------+-------------------+
-                      |      FastAPI Backend (Python 3.14)    |
-                      |  SQLAlchemy ORM + Pydantic Validation |
-                      +---------+-------------------+---------+
-                                |                   |
-                 CRUD / Engine  |                   | APScheduler
-                                v                   v
-                      +---------+---------+   +-----+-----------------+
-                      | SQLite / Postgres |   | 24h Return Reminders  |
-                      |   Database        |   | Overdue Escalations   |
-                      +-------------------+   +-----------------------+
-```
-
-### Key Architectural Pillars
-1. **Conflict-Free Slot Booking Engine**:
-   - Backend overlap detection: `(start_time < existing.end_time) AND (end_time > existing.start_time)` for all active reservation statuses (`pending`, `approved`, `checked_out`, `overdue`).
-   - Prevents double-booking race conditions and immediately rejects overlapping attempts with HTTP 409 Conflict.
-2. **Real-Time WebSocket Slot Synchronization (`/ws/slots`)**:
-   - Broadcasts real-time slot lock and availability updates instantly to all connected clients when bookings are created, reviewed, checked-out, or returned.
-3. **Equipment State Machine Audit Trail**:
-   - States: `available` -> `booked` -> `issued` -> `(returned -> available)` or `(overdue / under_maintenance)`.
-   - Immutable audit logging in the `lifecycles` table capturing timestamps, operator IDs, and condition remarks.
-4. **Automated Background Scheduling (APScheduler)**:
-   - Runs every 60 seconds.
-   - Automatically detects upcoming returns within 24 hours, creates notifications, and simulates email alerts.
-   - Automatically escalates unreturned equipment past deadline to `overdue`, updating equipment status and alerting staff.
-5. **Role-Based Access Control (RBAC)**:
-   - 3 distinct user personas with customized dashboard views, permissions, and navigation.
 
 ---
 
-## Roles & Permissions
+## 👥 Role-Based Access Matrix
 
-| Role | Permissions & Capabilities |
-| :--- | :--- |
-| **Student / Researcher** | Browse equipment & lab directory, filter by category/availability, view real-time calendar slots, submit booking requests with required academic justification (min 10 chars), track booking history, countdown to return deadline, cancel pending reservations. |
-| **Lab Assistant / Faculty** | View pending requisitions queue, review justifications, approve or reject with comments, perform check-out inspections with condition notes and photo URLs, process returns, flag physical damage (which auto-triggers maintenance & state machine transition). |
-| **System Admin** | Full access to master inventory (CRUD on equipment and labs), manage user roles (promote/demote), view Recharts analytics dashboard (KPI cards, most-booked bar chart, peak hours distribution, overdue rate trends, category utilization progress). |
+| Feature / Capability | Student / Researcher | Lab Assistant / Faculty | System Administrator |
+| :--- | :---: | :---: | :---: |
+| Browse Equipment & Filter by Specs | ✅ | ✅ | ✅ |
+| Check Interactive Calendar Availability | ✅ | ✅ | ✅ |
+| Submit Slot Requisition with Justification | ✅ | ❌ | ❌ |
+| Track Active Bookings & Return Countdowns | ✅ | ❌ | ❌ |
+| Review Requisitions Queue (Approve / Reject) | ❌ | ✅ | ✅ |
+| Perform Physical Handover & Return Inspection | ❌ | ✅ | ✅ |
+| Flag Physical Damage & Open Maintenance Tickets | ❌ | ✅ | ✅ |
+| Master Inventory CRUD (Add/Edit/Delete Equipment) | ❌ | ❌ | ✅ |
+| University Roster Verification & Account Approvals| ❌ | ❌ | ✅ |
+| Executive Recharts Analytics & KPI Dashboard | ❌ | ❌ | ✅ |
 
 ---
 
-## Pre-Seeded Demo Accounts
+## 🔑 Pre-Seeded Demo Accounts
 
-For immediate evaluation, the application includes a **1-Click Interactive Persona Switcher** on the top navigation bar, or you can sign in manually:
+The frontend includes a **1-Click Quick Persona Switcher** on the top navigation bar for immediate testing without typing:
 
-| Role | Demo Email | Password | Persona |
+| Role | Demo Email | Password | Persona & Department |
 | :--- | :--- | :--- | :--- |
-| **Student** | `student@campus.edu` | `campus123` | Alex Rivera (CS & AI Undergrad) |
-| **Lab Assistant** | `assistant@campus.edu` | `campus123` | Dr. Sarah Chen (ECE Faculty / Staff) |
-| **System Admin** | `admin@campus.edu` | `campus123` | Prof. Marcus Vance (Dean of Engineering) |
-| **Researcher** | `researcher@campus.edu` | `campus123` | Maya Patel (Robotics Master's Student) |
+| **Student** | `student@campus.edu` | `campus123` | Alex Rivera — Computer Science & AI |
+| **Lab Assistant** | `assistant@campus.edu` | `campus123` | Dr. Sarah Chen — Electronics & Hardware Staff |
+| **System Admin** | `admin@campus.edu` | `campus123` | Prof. Marcus Vance — Dean of Academic Labs |
+| **Researcher** | `researcher@campus.edu` | `campus123` | Maya Patel — Autonomous Robotics Graduate Student |
 
 ---
 
-## Directory Structure
+## 🏢 Campus Lab Directory & Floor Mapping
 
-```
-Smart Campus Equipment & Lab Booking System/
-├── backend/
-│   ├── app/
-│   │   ├── auth/           # JWT security, argon2/pbkdf2 hashing, role guards
-│   │   ├── models/         # SQLAlchemy ORM (User, Lab, Equipment, Booking, Lifecycle, etc.)
-│   │   ├── routes/         # REST API endpoints (auth, users, labs, equipment, bookings, etc.)
-│   │   ├── schemas/        # Pydantic schemas for request/response validation
-│   │   ├── services/       # APScheduler service and WebSocket ConnectionManager
-│   │   ├── config.py       # App settings and environment configs
-│   │   ├── database.py     # Database engine and session factory
-│   │   ├── main.py         # FastAPI instance, CORS, lifespan, routes
-│   │   └── seed.py         # Realistic seed dataset script
-│   ├── requirements.txt    # Python dependencies
-│   └── run.py              # Server launcher
-├── frontend/
-│   ├── src/
-│   │   ├── api/            # Fetch client with auth interceptors
-│   │   ├── components/     # Navbar, QuickDemoBar, ToastContainer, Skeletons, Modals
-│   │   ├── context/        # AuthContext, ThemeContext, WebSocketContext
-│   │   ├── pages/          # Login, Dashboard, Directory, Calendar, MyBookings, Queue, Admin
-│   │   ├── types/          # TypeScript interfaces
-│   │   ├── App.tsx         # Routing and layout
-│   │   ├── index.css       # Tailwind CSS and theme design tokens
-│   │   └── main.tsx        # React entrypoint
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.ts
-└── README.md
-```
+All laboratory spaces and hardware resources are mapped accurately across campus infrastructure:
+
+### BVS Block
+* **Floor 3**: Software Engineering Lab, Compiler Design Lab, DBMS Lab, Programming in Java Lab, OOPS (C++) Lab, Physics Lab
+* **Floor 2**: Chemistry Lab
+
+### MMS Block
+* **Floor 2**: Computer Network Lab, Computational Methods Lab, IT Lab, CAD Lab, Cyber Security Lab, Smart Room, DLCD Lab, Programming in C Lab
+* **Floor 1**: Engineering Graphics Lab, AI Lab, Computer Centre
+* **Ground Floor**: Mechanical Workshop, Electrical Lab
 
 ---
 
-## Setup & Running Locally
+## 📚 Software Engineering Lab Curriculum Mapping
+
+This system serves as a reference implementation for university **Software Engineering / OOAD (Object-Oriented Analysis & Design)** practicals:
+
+| Exp No. | Experiment Title | Implementation in this Repository |
+| :---: | :--- | :--- |
+| **Exp 1** | **Problem Statement** | Resolution of manual paper logbooks, slot collision, and inventory leakage across academic blocks. |
+| **Exp 2** | **Requirement Analysis & SRS** | Complete IEEE 830 functional (FR) and non-functional (NFR) requirements specification. |
+| **Exp 3** | **DFD & Structure Charts** | Level 0 Context Diagram, Level 1 & 2 Process Decompositions, and Modular Structure Chart. |
+| **Exp 4** | **Entity-Relationship (ER) Diagram** | Relational data schema (`User`, `Lab`, `Equipment`, `Booking`, `MaintenanceLog`, `StudentRegistry`). |
+| **Exp 5** | **Use Case Diagram** | Actor interactions (`Student`, `Lab Assistant`, `Admin`, `Scheduler`) with `<<include>>` and `<<extend>>`. |
+| **Exp 6** | **Class & Object Diagrams** | Detailed UML class structures (SQLAlchemy / Pydantic models) and runtime object instances. |
+| **Exp 7** | **State-Chart & Activity Diagrams** | Booking lifecycle state machine and multi-swimlane reservation activity flows. |
+| **Exp 8** | **Sequence & Collaboration Diagrams** | Message timeline for slot allocation, database lock, WebSocket broadcast, and approval. |
+| **Exp 9** | **Component Diagram** | Structural decoupling of Frontend SPA, FastAPI Engine, JWT Middleware, and ORM Persistence. |
+| **Exp 10** | **Deployment Diagram** | Hardware nodes: Client Browser $\leftrightarrow$ Uvicorn Application Server $\leftrightarrow$ Database Storage. |
+| **Exp 11** | **Full System Implementation** | Fully functional, production-ready codebase running locally and on GitHub! |
+
+---
+
+## 🚀 Setup & Running Locally
 
 ### Prerequisites
-- Python 3.10+ (Tested on Python 3.14)
-- Node.js 18+ & npm
+* **Python**: 3.10+ (Tested on Python 3.12 / 3.14)
+* **Node.js**: 18.0+ & `npm`
 
 ### 1. Backend Setup
 ```bash
+# Navigate to backend directory
 cd backend
 
 # Create virtual environment
 python -m venv venv
 
 # Activate virtual environment
-# On Windows:
+# Windows:
 .\venv\Scripts\activate
-# On Linux/macOS:
+# Linux/macOS:
 # source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run backend server (auto-seeds database on first launch)
+# Start backend server (automatically initializes & seeds SQLite DB on first run)
 python run.py
 ```
-- The backend will start on **`http://localhost:8000`**.
-- Auto-generated Swagger UI docs: **`http://localhost:8000/docs`**.
-- OpenAPI schema: **`http://localhost:8000/api/openapi.json`**.
+* Backend API: **`http://localhost:8000`**
+* Interactive Swagger Docs: **`http://localhost:8000/docs`**
+* Redoc Alternative Docs: **`http://localhost:8000/redoc`**
 
 ### 2. Frontend Setup
 ```bash
+# Navigate to frontend directory in a separate terminal
 cd frontend
 
-# Install packages
+# Install npm dependencies
 npm install
 
 # Start Vite development server
 npm run dev
 ```
-- The frontend will start on **`http://localhost:5173`**.
+* Frontend Application: **`http://localhost:5173`**
 
 ---
 
-## API Endpoints Summary
+## 🔌 API Endpoints Summary
 
 ### Authentication (`/api/auth`)
-- `POST /api/auth/register` — Register a new account
-- `POST /api/auth/login` — Sign in and receive JWT token
-- `GET /api/auth/me` — Retrieve current authenticated profile
+* `POST /api/auth/register` — Register student/faculty account with enrollment verification
+* `POST /api/auth/login` — Authenticate and receive signed JWT Bearer token
+* `GET /api/auth/me` — Retrieve active profile & assigned roles
 
 ### Equipment & Labs (`/api/equipment`, `/api/labs`)
-- `GET /api/equipment` — Filter equipment by category, lab, status, or search term
-- `GET /api/equipment/{id}/lifecycles` — Retrieve immutable audit trail of state changes
-- `POST /api/equipment` — Add new hardware resource (Admin)
-- `PUT /api/equipment/{id}` — Update specs or status (Staff/Admin)
-- `DELETE /api/equipment/{id}` — Decommission hardware (Admin)
-- `GET /api/labs` — List all campus laboratories
-- `POST /api/labs` — Create new campus lab facility (Admin)
+* `GET /api/equipment` — Filter hardware by category, block, lab, availability, or keyword
+* `GET /api/equipment/{id}/lifecycles` — Retrieve immutable audit trail of past handovers
+* `POST /api/equipment` — Provision new equipment (Admin)
+* `PUT /api/equipment/{id}` — Update hardware specifications or active status
+* `DELETE /api/equipment/{id}` — Decommission hardware resource
+* `GET /api/labs` — Retrieve campus lab facilities with floor & block metadata
 
-### Bookings & Scheduling (`/api/bookings`)
-- `POST /api/bookings` — Create a reservation (runs conflict validator)
-- `GET /api/bookings/my` — Get user's own reservation history
-- `GET /api/bookings/calendar` — Get slot schedule by equipment or lab
-- `GET /api/bookings/queue` — Staff queue for pending requisitions
-- `PUT /api/bookings/{id}/review` — Approve or reject requisition with remarks
-- `POST /api/bookings/{id}/checkout` — Handover equipment with condition notes & photo
-- `POST /api/bookings/{id}/checkin` — Inspect return and flag physical damage
-- `POST /api/bookings/{id}/cancel` — Cancel pending/approved reservation
+### Bookings & Queue (`/api/bookings`)
+* `POST /api/bookings` — Request a time slot (triggers $O(1)$ overlap validation)
+* `GET /api/bookings/my` — Fetch current user's reservations and countdowns
+* `GET /api/bookings/calendar` — Fetch slot bookings for a target date & resource
+* `GET /api/bookings/queue` — Staff requisition approval queue
+* `PUT /api/bookings/{id}/review` — Approve or reject booking with remarks
+* `POST /api/bookings/{id}/checkout` — Complete physical checkout inspection
+* `POST /api/bookings/{id}/checkin` — Inspect return and flag physical damage
+* `POST /api/bookings/{id}/cancel` — Cancel pending/approved reservation
 
 ### Maintenance & Damage (`/api/maintenance`)
-- `GET /api/maintenance` — List active damage tickets
-- `POST /api/maintenance` — Log damage and transition unit to `under_maintenance`
-- `PUT /api/maintenance/{id}` — Resolve repair ticket and restore to `available`
+* `GET /api/maintenance` — Active equipment damage & repair tickets
+* `POST /api/maintenance` — Log repair ticket and transition unit to `under_maintenance`
+* `PUT /api/maintenance/{id}` — Resolve repair ticket and restore unit to `available`
 
 ### Analytics Dashboard (`/api/analytics`)
-- `GET /api/analytics/dashboard` — Master metrics (KPIs, most-booked hardware, peak hours distribution, overdue rate trends, category utilization)
+* `GET /api/analytics/dashboard` — Master metrics (KPIs, utilization rates, peak hours, overdue rates)
+
+---
+
+## 📄 License & Attribution
+
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+Developed with ❤️ for Academic Research & University Campus Infrastructure by **[Vansh-Codez](https://github.com/Vansh-Codez)**.
