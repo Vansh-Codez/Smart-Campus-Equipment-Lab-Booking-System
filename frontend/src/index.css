@@ -1,0 +1,431 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 222 47% 11%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 243 75% 59%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 243 75% 59%;
+    --accent: 217 33% 12%;
+    --accent-foreground: 210 40% 98%;
+  }
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* =========================================================================
+   LIGHT MODE DESIGN SYSTEM (GunanQ Architectural Blueprint Style)
+   ========================================================================= */
+
+html.light body {
+  background-color: #fbfcfd;
+  background-image: 
+    linear-gradient(to right, rgba(2, 132, 199, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(2, 132, 199, 0.055) 1px, transparent 1px);
+  background-size: 48px 48px;
+  color: #0f172a;
+}
+
+html.dark body {
+  background-color: #0b1329;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  color: #f8fafc;
+}
+
+/* --- Header / Navbar Light Mode --- */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom-color: rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04) !important;
+  color: #0f172a !important;
+}
+
+/* --- Modal & Drawer Backdrops / Scrims --- */
+/* Backdrops MUST remain translucent with frosted-glass blur so the underlying page is clearly visible */
+html.light .drawer-backdrop,
+html.light .modal-backdrop,
+html.light div.fixed.inset-0[class*="backdrop-blur"],
+html.light div.absolute.inset-0[class*="backdrop-blur"],
+html.light div[class*="fixed"][class*="inset-0"][class*="bg-slate-"],
+html.light div[class*="absolute"][class*="inset-0"][class*="bg-slate-"],
+html.light [class*="inset-0"][class*="backdrop-blur"] {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  box-shadow: none !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+
+html.dark .drawer-backdrop,
+html.dark .modal-backdrop,
+html.dark div.fixed.inset-0[class*="backdrop-blur"],
+html.dark div.absolute.inset-0[class*="backdrop-blur"],
+html.dark div[class*="fixed"][class*="inset-0"][class*="bg-slate-"],
+html.dark div[class*="absolute"][class*="inset-0"][class*="bg-slate-"],
+html.dark [class*="inset-0"][class*="backdrop-blur"] {
+  background-color: rgba(2, 6, 23, 0.72) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  box-shadow: none !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+
+/* --- Card & Panel Elevations --- */
+/* Exclude full-screen fixed/absolute overlays from card background rules */
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900,
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900\/95,
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900\/90,
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900\/80,
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900\/70,
+html.light :not([class*="fixed"]):not([class*="absolute"]).bg-slate-900\/60,
+html.light .glass-panel {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Replace harsh dark shadows with soft ambient lighting */
+html.light .shadow-2xl,
+html.light .shadow-xl {
+  box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.05), 0 4px 10px -2px rgba(15, 23, 42, 0.02) !important;
+}
+html.light .shadow-lg,
+html.light .shadow-md,
+html.light .shadow {
+  box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.04), 0 2px 4px -1px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Floating Card Hover Lift */
+html.light .hover\:border-slate-700:hover,
+html.light .hover\:border-indigo-500\/40:hover,
+html.light .hover\:border-indigo-500\/50:hover {
+  border-color: rgba(2, 132, 199, 0.3) !important;
+  box-shadow: 0 16px 36px -4px rgba(2, 132, 199, 0.12), 0 6px 16px -2px rgba(2, 132, 199, 0.04) !important;
+  transform: translateY(-2px);
+}
+
+/* Nested panels, inputs, and containers (exclude overlays) */
+html.light :not([class*="fixed"]):not([class*="absolute"]):not([class*="inset-0"]).bg-slate-950,
+html.light :not([class*="fixed"]):not([class*="absolute"]):not([class*="inset-0"]).bg-slate-950\/90,
+html.light :not([class*="fixed"]):not([class*="absolute"]):not([class*="inset-0"]).bg-slate-950\/80,
+html.light :not([class*="fixed"]):not([class*="absolute"]):not([class*="inset-0"]).bg-slate-950\/50 {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Secondary Button / Pill Styling */
+html.light .bg-slate-800,
+html.light .bg-slate-800\/90,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/60 {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .hover\:bg-slate-800\/40:hover,
+html.light .hover\:bg-slate-800\/60:hover,
+html.light .hover\:bg-slate-800:hover,
+html.light .hover\:bg-slate-700:hover,
+html.light .hover\:bg-slate-700\/80:hover {
+  background-color: #f0f9ff !important;
+  color: #0284c7 !important;
+  border-color: #bae6fd !important;
+}
+
+/* --- Border and Divider Overrides --- */
+html.light .border-slate-800,
+html.light .border-slate-800\/90,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-800\/40,
+html.light .border-slate-700,
+html.light .border-slate-700\/60 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .divide-slate-800\/60 > *,
+html.light .divide-slate-800 > * {
+  border-color: #e2e8f0 !important;
+}
+
+/* --- Typography & Text Contrast --- */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* CRITICAL: Protect white text on solid colored buttons & pills */
+html.light button.bg-indigo-600,
+html.light button.bg-sky-600,
+html.light button.bg-sky-700,
+html.light button.bg-emerald-600,
+html.light button.bg-amber-500,
+html.light button.bg-rose-600,
+html.light a.bg-indigo-600,
+html.light a.bg-sky-600,
+html.light a.bg-sky-700,
+html.light .btn-solid-white-text,
+html.light .pill-primary {
+  color: #ffffff !important;
+}
+
+/* Hero Banner Typography */
+html.light .gunanq-hero h1 {
+  color: #ffffff !important;
+}
+
+html.light .gunanq-hero p {
+  color: rgba(240, 249, 255, 0.95) !important;
+}
+
+/* White CTA buttons inside Hero Banner must ALWAYS have dark, high-contrast readable text */
+html.light .gunanq-hero .bg-white,
+html.light .gunanq-hero a.bg-white,
+html.light .gunanq-hero button.bg-white {
+  color: #0c4a6e !important;
+}
+
+html.light .gunanq-hero .bg-white span,
+html.light .gunanq-hero a.bg-white span,
+html.light .gunanq-hero button.bg-white span {
+  color: #0c4a6e !important;
+  font-weight: 700 !important;
+}
+
+/* Scrollbar cleanup - Eliminates harsh black Windows scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.55);
+}
+
+/* Fail-safe: Ensure data inside light mode cards, tables, panels, and modals is always crisp & visible */
+html.light table td.text-white,
+html.light table th.text-white,
+html.light strong.text-white,
+html.light span.text-white:not(button *):not(a *):not(.badge):not(.pill):not([class*="bg-"]):not([class*="from-"]),
+html.light div.text-white:not(button *):not(a *):not(.badge):not(.pill):not([class*="bg-"]):not([class*="from-"]):not(.gunanq-hero *) {
+  color: #0f172a !important;
+}
+
+/* --- GunanQ Rubric-Style Pastel Badges --- */
+
+/* Emerald (Available / Returned / Live / Success) */
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-950\/20 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #047857 !important;
+}
+
+/* Sky / Indigo (Booked / In Progress / Info) */
+html.light .bg-indigo-500\/10,
+html.light .bg-indigo-500\/20,
+html.light .bg-indigo-600\/20,
+html.light .bg-indigo-950\/20,
+html.light .bg-indigo-950\/40 {
+  background-color: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+html.light .text-indigo-300,
+html.light .text-indigo-400 {
+  color: #0369a1 !important;
+}
+
+/* Cyan (Issued / In Use / Live Sync) */
+html.light .bg-cyan-500\/10,
+html.light .bg-cyan-500\/20 {
+  background-color: #f0fdfa !important;
+  border-color: #99f6e4 !important;
+}
+html.light .text-cyan-300,
+html.light .text-cyan-400 {
+  color: #0e7490 !important;
+}
+
+/* Amber (Maintenance / Pending Review / BVS Block) */
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/20,
+html.light .bg-amber-950\/20 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #b45309 !important;
+}
+
+/* Rose (Overdue / Cancelled / Rejected / Offline) */
+html.light .bg-rose-500\/10,
+html.light .bg-rose-500\/20,
+html.light .bg-rose-950\/20 {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #be123c !important;
+}
+
+/* --- Form Controls: Inputs, Selects, Date pickers --- */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03) !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+  outline: none !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* --- Tables --- */
+html.light table thead {
+  background-color: #f8fafc !important;
+  color: #475569 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* --- Footer --- */
+html.light footer {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+/* --- Glassmorphism --- */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+/* Glowing dot for status indicators */
+.status-pulse-active {
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
+.status-pulse-warning {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+}
+.status-pulse-danger {
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.8);
+}
