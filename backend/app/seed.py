@@ -24,6 +24,7 @@ def seed_student_records(db):
             StudentRecord(enrollment_no="0101EC231019", name="Devansh Joshi", department="ECE", batch_year="2024-2028", status="Active Enrolled"),
             StudentRecord(enrollment_no="0101CS231099", name="Vikram Malhotra", department="CSE-1", batch_year="2024-2028", status="Active Enrolled"),
             StudentRecord(enrollment_no="0101CS231105", name="Tanvi Deshmukh", department="CSE-2", batch_year="2024-2028", status="Active Enrolled"),
+            StudentRecord(enrollment_no="00123815624", name="Vansh", department="CSE-AIML", batch_year="2024-2028", status="Active Enrolled"),
         ]
         db.add_all(records)
         db.commit()
@@ -976,6 +977,19 @@ def seed_database():
             is_approved=True
         )
         db.add(researcher)
+
+    vansh = db.query(User).filter(User.email == "vanshbgh18@gmail.com").first()
+    if not vansh:
+        vansh = User(
+            name="Vansh",
+            email="vanshbgh18@gmail.com",
+            password_hash="$argon2id$v=19$m=65536,t=3,p=4$94TeJbMmHgJ16tSRu3x5FA$ORWczYB96v7qnofrZxj5eT1R69TgdmeePrbDKvl7yas",
+            role="student",
+            department="CSE-AIML",
+            enrollment_no="00123815624",
+            is_approved=True
+        )
+        db.add(vansh)
 
     db.commit()
 
