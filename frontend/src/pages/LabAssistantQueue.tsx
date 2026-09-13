@@ -148,7 +148,7 @@ export const LabAssistantQueue: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab Switcher - GunanQ Pill Container */}
+        {/* Tab Switcher - Rounded Pill Container */}
         <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-200 dark:border-slate-800">
           <button
             onClick={() => setActiveTab('pending')}
@@ -281,7 +281,7 @@ export const LabAssistantQueue: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Justification Box - Elevated GunanQ Light & Dark Container */}
+                {/* Justification Box - Elevated Light & Dark Container */}
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/60 text-xs">
                   <span className="text-slate-600 dark:text-slate-400 font-semibold block mb-1 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5 text-sky-600 dark:text-indigo-400" />

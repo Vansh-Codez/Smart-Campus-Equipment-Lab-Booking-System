@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =========================================================================
-   LIGHT MODE DESIGN SYSTEM (GunanQ Architectural Blueprint Style)
+   LIGHT MODE DESIGN SYSTEM (Architectural Blueprint Style)
    ========================================================================= */
 
 html.light body {
@@ -229,24 +229,24 @@ html.light .pill-primary {
 }
 
 /* Hero Banner Typography */
-html.light .gunanq-hero h1 {
+html.light .campus-hero h1 {
   color: #ffffff !important;
 }
 
-html.light .gunanq-hero p {
+html.light .campus-hero p {
   color: rgba(240, 249, 255, 0.95) !important;
 }
 
 /* White CTA buttons inside Hero Banner must ALWAYS have dark, high-contrast readable text */
-html.light .gunanq-hero .bg-white,
-html.light .gunanq-hero a.bg-white,
-html.light .gunanq-hero button.bg-white {
+html.light .campus-hero .bg-white,
+html.light .campus-hero a.bg-white,
+html.light .campus-hero button.bg-white {
   color: #0c4a6e !important;
 }
 
-html.light .gunanq-hero .bg-white span,
-html.light .gunanq-hero a.bg-white span,
-html.light .gunanq-hero button.bg-white span {
+html.light .campus-hero .bg-white span,
+html.light .campus-hero a.bg-white span,
+html.light .campus-hero button.bg-white span {
   color: #0c4a6e !important;
   font-weight: 700 !important;
 }
@@ -280,11 +280,11 @@ html.light table td.text-white,
 html.light table th.text-white,
 html.light strong.text-white,
 html.light span.text-white:not(button *):not(a *):not(.badge):not(.pill):not([class*="bg-"]):not([class*="from-"]),
-html.light div.text-white:not(button *):not(a *):not(.badge):not(.pill):not([class*="bg-"]):not([class*="from-"]):not(.gunanq-hero *) {
+html.light div.text-white:not(button *):not(a *):not(.badge):not(.pill):not([class*="bg-"]):not([class*="from-"]):not(.campus-hero *) {
   color: #0f172a !important;
 }
 
-/* --- GunanQ Rubric-Style Pastel Badges --- */
+/* --- Rubric-Style Pastel Badges --- */
 
 /* Emerald (Available / Returned / Live / Success) */
 html.light .bg-emerald-500\/10,

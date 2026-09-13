@@ -58,8 +58,8 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Welcome Hero Banner - GunanQ Rich Ocean Blue / Blueprint Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 dark:from-indigo-950/90 dark:via-slate-900 dark:to-slate-950 border border-sky-600/30 dark:border-indigo-500/20 p-6 sm:p-10 shadow-xl gunanq-hero backdrop-blur-md">
+      {/* Welcome Hero Banner - Academic Blue / Blueprint Header */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 dark:from-indigo-950/90 dark:via-slate-900 dark:to-slate-950 border border-sky-600/30 dark:border-indigo-500/20 p-6 sm:p-10 shadow-xl campus-hero backdrop-blur-md">
         <div className="relative z-10 max-w-2xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-white text-xs font-semibold backdrop-blur-sm">
             <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
@@ -114,7 +114,7 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Stats Grid - GunanQ High-Contrast Elevated Cards */}
+      {/* KPI Stats Grid - High-Contrast Elevated Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-emerald-300 dark:hover:border-emerald-500/40 transition duration-200">
           <div className="flex items-center justify-between">

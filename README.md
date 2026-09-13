@@ -53,7 +53,7 @@ Traditional university laboratories rely on fragmented paper logbooks, manual re
 * **24-Hour Return Reminders**: Scans reservations every 60 seconds and dispatches reminder notifications to students.
 * **Overdue Escalations**: Automatically flags unreturned units past deadline, alerts lab assistants, and triggers overdue telemetry.
 
-### 🎨 6. GunanQ-Inspired Modern Design System
+### 🎨 6. Modern Adaptive Design System
 * Pure white card elevations with ambient lighting in **Light Mode** and deep slate glassmorphism in **Dark Mode**.
 * Distinguishable categorical navigation icons with interactive hover pop-out physics.
 * High-contrast typography, rubric-style status pills, and translucent frosted-glass modal scrims.
@@ -65,7 +65,7 @@ Traditional university laboratories rely on fragmented paper logbooks, manual re
 ```mermaid
 graph TD
     subgraph Client Tier [Frontend - React 19 + TypeScript + Vite]
-        UI[Tailwind CSS UI / GunanQ Design System]
+        UI[Tailwind CSS UI / Modern Academic Design System]
         State[Theme & Auth Context State]
         WS_Client[WebSocket Real-Time Client]
     end

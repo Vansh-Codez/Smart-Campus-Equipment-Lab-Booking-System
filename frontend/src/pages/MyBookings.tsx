@@ -136,7 +136,7 @@ export const MyBookings: React.FC = () => {
           </p>
         </div>
 
-        {/* Filter Pills - GunanQ Style */}
+        {/* Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto">
           {['all', 'pending', 'approved', 'checked_out', 'returned', 'overdue'].map((st) => (
             <button

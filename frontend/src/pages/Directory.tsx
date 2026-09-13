@@ -117,7 +117,7 @@ export const Directory: React.FC = () => {
 
       {/* Filter Bar & Category Tabs */}
       <div className="space-y-4">
-        {/* Category Pills - GunanQ Style */}
+        {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
           {categories.map((cat) => (
             <button
@@ -242,7 +242,7 @@ export const Directory: React.FC = () => {
                   </div>
                 )}
 
-                {/* Status Badge - GunanQ Rubric Style */}
+                {/* Status Badge */}
                 <div className="absolute top-3 right-3">
                   <span
                     className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${

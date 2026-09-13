@@ -307,7 +307,7 @@ export const AdminPanel: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab Buttons - GunanQ Pill Container */}
+        {/* Tab Buttons - Pill Container */}
         <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
           {[
             { id: 'analytics', label: 'Analytics Dashboard', icon: BarChart3, color: 'text-sky-500' },
