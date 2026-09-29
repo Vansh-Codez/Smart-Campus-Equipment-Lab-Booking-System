@@ -73,6 +73,9 @@ export const BookingCalendar: React.FC = () => {
       setLoading(true);
       const data = await api.getCalendarSlots({
         equipment_id: selectedEquipmentId,
+        lab_id: selectedLabId !== 'all' ? Number(selectedLabId) : undefined,
+        start: `${selectedDate}T00:00:00`,
+        end: `${selectedDate}T23:59:59`,
       });
       setSlots(data);
     } catch (err) {
@@ -84,7 +87,7 @@ export const BookingCalendar: React.FC = () => {
 
   useEffect(() => {
     fetchSlots();
-  }, [selectedEquipmentId]);
+  }, [selectedEquipmentId, selectedDate, selectedLabId]);
 
   // Real-time live update on WebSocket events
   useEffect(() => {
@@ -101,6 +104,15 @@ export const BookingCalendar: React.FC = () => {
   }, [lastEvent]);
 
   const selectedEquipment = equipmentList.find((e) => e.id === selectedEquipmentId);
+  const visibleEquipment = selectedLabId === 'all'
+    ? equipmentList
+    : equipmentList.filter((equipment) => equipment.lab_id === Number(selectedLabId));
+
+  useEffect(() => {
+    if (selectedLabId === 'all') return;
+    const stillVisible = visibleEquipment.some((equipment) => equipment.id === selectedEquipmentId);
+    if (!stillVisible) setSelectedEquipmentId(visibleEquipment[0]?.id || null);
+  }, [selectedLabId, equipmentList, selectedEquipmentId]);
 
   // Filter slots for the selected date
   const dayBookings = slots.filter((b) => {
@@ -115,6 +127,11 @@ export const BookingCalendar: React.FC = () => {
 
     if (!selectedEquipmentId) {
       setFormError('Please select equipment to reserve.');
+      return;
+    }
+
+    if (selectedEquipment?.status === 'under_maintenance') {
+      setFormError('This resource is currently under maintenance. Choose another resource or a later date.');
       return;
     }
 
@@ -176,15 +193,14 @@ export const BookingCalendar: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="page-container space-y-8">
       {/* Header with live sync pulse */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Live Slot Booking Calendar
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real-time conflict-free reservation engine with live WebSocket slot synchronization.
+          <div className="eyebrow"><CalendarIcon className="h-3.5 w-3.5" /> Reservation planner</div>
+          <h1 className="page-title">Find your next open slot</h1>
+          <p className="page-subtitle">
+            Choose a resource and date, review live availability, then submit a clear academic request.
           </p>
         </div>
 
@@ -198,16 +214,16 @@ export const BookingCalendar: React.FC = () => {
         {/* Left Column: Equipment Picker & Real-Time Schedule */}
         <div className="lg:col-span-7 space-y-6">
           {/* Equipment & Date Selectors */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 space-y-4 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
+          <div className="surface space-y-4 p-5 sm:p-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+              <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Select Hardware Resource</label>
                 <select
                   value={selectedEquipmentId || ''}
                   onChange={(e) => setSelectedEquipmentId(Number(e.target.value))}
                   className="w-full py-2.5 px-3 text-xs bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
                 >
-                  {equipmentList.map((eq) => {
+                  {visibleEquipment.map((eq) => {
                     const loc = eq.lab?.location ? ` (${eq.lab.location})` : '';
                     return (
                       <option key={eq.id} value={eq.id}>
@@ -215,6 +231,18 @@ export const BookingCalendar: React.FC = () => {
                       </option>
                     );
                   })}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Campus lab</label>
+                <select
+                  value={selectedLabId}
+                  onChange={(e) => setSelectedLabId(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                >
+                  <option value="all">All campus labs</option>
+                  {labs.map((lab) => <option key={lab.id} value={lab.id}>{lab.name} — {lab.location}</option>)}
                 </select>
               </div>
 
@@ -259,7 +287,7 @@ export const BookingCalendar: React.FC = () => {
           </div>
 
           {/* Visual Daily Timeline Grid */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 space-y-4 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)]">
+          <div className="surface space-y-4 p-5 sm:p-6">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <CalendarIcon className="w-4 h-4 text-sky-600 dark:text-indigo-400" />
@@ -397,8 +425,8 @@ export const BookingCalendar: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={submitting}
-                className="w-full py-3 px-5 rounded-full bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white font-bold text-xs shadow-md shadow-sky-600/25 flex items-center justify-center gap-2 transition duration-200"
+                disabled={submitting || selectedEquipment?.status === 'under_maintenance'}
+                className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 transition duration-200 hover:from-indigo-500 hover:to-violet-500 disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span>{submitting ? 'Validating Conflicts...' : 'Submit Booking Request'}</span>
               </button>

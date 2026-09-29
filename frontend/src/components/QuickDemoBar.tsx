@@ -1,63 +1,40 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
-import { GraduationCap, FlaskConical, ShieldCheck, Sparkles } from 'lucide-react';
+import { FlaskConical, GraduationCap, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const QuickDemoBar: React.FC = () => {
   const { user, switchDemoRole, loading } = useAuth();
 
-  const personas: { role: UserRole; label: string; name: string; icon: any; color: string }[] = [
-    {
-      role: 'student',
-      label: 'Student / Researcher',
-      name: 'Alex Rivera',
-      icon: GraduationCap,
-      color: 'from-blue-500/20 to-indigo-500/20 text-indigo-400 border-indigo-500/30',
-    },
-    {
-      role: 'lab_assistant',
-      label: 'Lab Assistant / Faculty',
-      name: 'Dr. Sarah Chen',
-      icon: FlaskConical,
-      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30',
-    },
-    {
-      role: 'admin',
-      label: 'System Admin',
-      name: 'Prof. Marcus Vance',
-      icon: ShieldCheck,
-      color: 'from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30',
-    },
+  const personas: { role: UserRole; label: string; name: string; icon: any }[] = [
+    { role: 'student', label: 'Student', name: 'Alex Rivera', icon: GraduationCap },
+    { role: 'lab_assistant', label: 'Lab assistant', name: 'Dr. Sarah Chen', icon: FlaskConical },
+    { role: 'admin', label: 'Administrator', name: 'Prof. Marcus Vance', icon: ShieldCheck },
   ];
 
   return (
-    <div className="bg-white/90 dark:bg-slate-900/90 border-b border-slate-200/90 dark:border-slate-800 text-xs py-1.5 px-4 text-slate-700 dark:text-slate-300 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-          <span>Interactive Demo Switcher:</span>
+    <div className="demo-strip px-4 py-1.5 text-[0.66rem]">
+      <div className="mx-auto flex w-[min(100%,1160px)] flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 font-semibold">
+          <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+          <span className="hidden sm:inline">Preview workspace</span>
+          <span className="sm:hidden">Demo access</span>
+          <span className="hidden text-slate-400 sm:inline">· Switch personas without leaving the flow</span>
         </div>
-        <div className="flex items-center gap-2">
-          {personas.map((p) => {
-            const Icon = p.icon;
-            const isActive = user?.role === p.role;
+        <div className="flex max-w-full gap-1.5 overflow-x-auto no-scrollbar">
+          {personas.map(({ role, label, name, icon: Icon }) => {
+            const active = user?.role === role;
             return (
               <button
-                key={p.role}
+                key={role}
                 disabled={loading}
-                onClick={() => switchDemoRole(p.role)}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all duration-200 font-medium ${
-                  isActive
-                    ? 'bg-sky-600 text-white border-sky-400 shadow-sm shadow-sky-500/30 ring-1 ring-sky-400'
-                    : 'bg-white dark:bg-slate-800/80 hover:bg-sky-50/70 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 border-slate-200/90 dark:border-slate-700 hover:border-sky-300'
-                }`}
+                onClick={() => switchDemoRole(role)}
+                className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold transition ${active ? 'border-indigo-300 bg-indigo-600 text-white shadow-sm dark:border-indigo-400' : 'border-slate-200 bg-white/70 text-slate-600 hover:border-indigo-200 hover:bg-white dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-indigo-500/50 dark:hover:bg-slate-800'}`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : ''}`} />
-                <span className="hidden sm:inline">{p.label}:</span>
-                <span className={isActive ? 'font-semibold text-white' : 'text-slate-500 dark:text-slate-400'}>{p.name}</span>
-                {isActive && (
-                  <span className="ml-1 w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping" />
-                )}
+                <Icon className="h-3.5 w-3.5" />
+                <span>{label}</span>
+                <span className={`hidden md:inline ${active ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'}`}>{name}</span>
+                {active && <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />}
               </button>
             );
           })}

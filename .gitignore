@@ -47,3 +47,6 @@ yarn-error.log*
 
 # Setup scripts
 setup_git_history.ps1
+
+# Agent workspace
+__agent__/

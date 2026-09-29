@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -6,20 +6,29 @@ import { useWebSocket } from '../context/WebSocketContext';
 import { NotificationDrawer } from './NotificationDrawer';
 import { api } from '../api/client';
 import {
-  Cpu,
-  LayoutDashboard,
-  Calendar,
-  Layers,
-  ClipboardList,
-  ClipboardCheck,
-  ShieldAlert,
+  Activity,
   Bell,
-  Sun,
-  Moon,
+  CalendarDays,
+  ClipboardCheck,
+  ClipboardList,
+  LayoutDashboard,
+  Layers3,
   LogOut,
-  Radio,
-  User as UserIcon,
+  Moon,
+  Shield,
+  Sparkles,
+  Sun,
+  Cpu,
 } from 'lucide-react';
+
+const navLinks = [
+  { name: 'Overview', path: '/', icon: LayoutDashboard, roles: ['student', 'lab_assistant', 'admin'] },
+  { name: 'Resource library', path: '/directory', icon: Layers3, roles: ['student', 'lab_assistant', 'admin'] },
+  { name: 'Book a slot', path: '/calendar', icon: CalendarDays, roles: ['student', 'lab_assistant', 'admin'] },
+  { name: 'My bookings', path: '/my-bookings', icon: ClipboardList, roles: ['student', 'lab_assistant', 'admin'] },
+  { name: 'Review queue', path: '/assistant/queue', icon: ClipboardCheck, roles: ['lab_assistant', 'admin'] },
+  { name: 'Admin studio', path: '/admin', icon: Shield, roles: ['admin'] },
+];
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -27,30 +36,25 @@ export const Navbar: React.FC = () => {
   const { isConnected, lastEvent } = useWebSocket();
   const location = useLocation();
   const navigate = useNavigate();
-
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   const fetchUnread = async () => {
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
     try {
-      if (user) {
-        const notifs = await api.getNotifications();
-        const unread = notifs.filter((n: any) => !n.is_read).length;
-        setUnreadCount(unread);
-      }
+      const notifications = await api.getNotifications();
+      setUnreadCount(notifications.filter((notification: any) => !notification.is_read).length);
     } catch {
-      // ignore
+      // Notification availability should never block navigation.
     }
   };
 
+  useEffect(() => { fetchUnread(); }, [user]);
   useEffect(() => {
-    fetchUnread();
-  }, [user]);
-
-  useEffect(() => {
-    if (lastEvent) {
-      fetchUnread();
-    }
+    if (lastEvent && lastEvent.type !== 'pong') fetchUnread();
   }, [lastEvent]);
 
   const handleLogout = () => {
@@ -58,217 +62,75 @@ export const Navbar: React.FC = () => {
     navigate('/login');
   };
 
-  const navLinks = [
-    { 
-      name: 'Dashboard', 
-      path: '/', 
-      icon: LayoutDashboard, 
-      roles: ['student', 'lab_assistant', 'admin'],
-      color: 'text-sky-500 group-hover:text-sky-600',
-    },
-    { 
-      name: 'Directory', 
-      path: '/directory', 
-      icon: Layers, 
-      roles: ['student', 'lab_assistant', 'admin'],
-      color: 'text-emerald-500 group-hover:text-emerald-600',
-    },
-    { 
-      name: 'Calendar Slots', 
-      path: '/calendar', 
-      icon: Calendar, 
-      roles: ['student', 'lab_assistant', 'admin'],
-      color: 'text-purple-500 group-hover:text-purple-600',
-    },
-    { 
-      name: 'My Bookings', 
-      path: '/my-bookings', 
-      icon: ClipboardList, 
-      roles: ['student', 'lab_assistant', 'admin'],
-      color: 'text-amber-500 group-hover:text-amber-600',
-    },
-    { 
-      name: 'Requisitions Queue', 
-      path: '/assistant/queue', 
-      icon: ClipboardCheck, 
-      roles: ['lab_assistant', 'admin'],
-      color: 'text-cyan-500 group-hover:text-cyan-600',
-    },
-    { 
-      name: 'Admin Panel', 
-      path: '/admin', 
-      icon: ShieldAlert, 
-      roles: ['admin'],
-      color: 'text-rose-500 group-hover:text-rose-600',
-    },
-  ];
+  const visibleLinks = navLinks.filter((link) => !user || link.roles.includes(user.role));
+  const isCurrent = (path: string) => path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-100 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
-          {/* Brand */}
-          <div className="flex items-center gap-3 shrink-0">
-            <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-md shadow-sky-500/20 group-hover:scale-105 transition duration-200 shrink-0">
-                <div className="w-full h-full bg-white dark:bg-slate-900 rounded-[10px] flex items-center justify-center">
-                  <Cpu className="w-5 h-5 text-sky-600 dark:text-cyan-400 group-hover:rotate-12 transition duration-300" />
-                </div>
-              </div>
-              <div className="shrink-0 whitespace-nowrap">
-                <div className="font-extrabold tracking-tight text-sm sm:text-base bg-gradient-to-r from-slate-900 via-sky-900 to-sky-600 dark:from-white dark:via-indigo-200 dark:to-cyan-300 bg-clip-text text-transparent leading-none">
-                  Smart Campus
-                </div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 tracking-wider uppercase font-semibold leading-none mt-1">
-                  Lab & Equipment OS
-                </div>
-              </div>
-            </Link>
+      <header className="topbar">
+        <div className="mx-auto flex h-[4.35rem] w-[min(100%-2rem,1160px)] items-center justify-between gap-4">
+          <Link to="/" className="group flex min-w-0 items-center gap-3">
+            <span className="brand-mark shrink-0"><Cpu className="h-5 w-5" /></span>
+            <span className="min-w-0">
+              <span className="block truncate font-display text-[0.92rem] font-extrabold tracking-tight text-slate-900 dark:text-white">Smart Campus</span>
+              <span className="block truncate text-[0.62rem] font-bold uppercase tracking-[0.17em] text-slate-400 dark:text-slate-500">Resource operations</span>
+            </span>
+          </Link>
 
-            {/* Live WebSocket Status Badge */}
-            <div
-              className={`hidden 2xl:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium border shrink-0 ${
-                isConnected
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/30'
-                  : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/30'
-              }`}
-              title={isConnected ? 'Connected to live WebSocket slot sync' : 'Reconnecting...'}
-            >
-              <Radio className={`w-3 h-3 ${isConnected ? 'animate-pulse text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`} />
-              <span>{isConnected ? 'Live Sync' : 'Offline'}</span>
-            </div>
-          </div>
-
-          {/* Nav Items - Pill Styled */}
-          <nav className="hidden xl:flex items-center gap-1.5 shrink-0">
-            {navLinks
-              .filter((l) => !user || l.roles.includes(user.role))
-              .map((link) => {
-                const Icon = link.icon;
-                const isActive = location.pathname === link.path;
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`group flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 shrink-0 ${
-                      isActive
-                        ? 'bg-sky-50 text-sky-700 border border-sky-200/90 shadow-sm font-semibold dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-sky-50/60 dark:hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5 ${link.color}`} />
-                    <span>{link.name}</span>
-                  </Link>
-                );
-              })}
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+            {visibleLinks.map(({ name, path, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`group flex items-center gap-2 rounded-xl px-3 py-2 text-[0.72rem] font-semibold transition ${
+                  isCurrent(path)
+                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100 dark:bg-indigo-500/15 dark:text-indigo-200 dark:ring-indigo-400/20'
+                    : 'text-slate-500 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/70 dark:hover:text-white'
+                }`}
+              >
+                <Icon className={`h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 ${isCurrent(path) ? 'text-indigo-600 dark:text-indigo-300' : 'text-slate-400'}`} />
+                <span>{name}</span>
+              </Link>
+            ))}
           </nav>
 
-          {/* Right Tools */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Live WebSocket Status Badge for standard desktop */}
-            <div
-              className={`hidden md:flex 2xl:hidden items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium border shrink-0 ${
-                isConnected
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/30'
-                  : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/30'
-              }`}
-              title={isConnected ? 'Connected to live WebSocket slot sync' : 'Reconnecting...'}
-            >
-              <Radio className={`w-2.5 h-2.5 ${isConnected ? 'animate-pulse text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`} />
-              <span>{isConnected ? 'Live' : 'Offline'}</span>
-            </div>
-
-            {/* Theme Toggle - Rounded Pill */}
-            <button
-              onClick={toggleTheme}
-              className="px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:border-sky-300 dark:hover:border-slate-600 hover:scale-105 transition flex items-center gap-1.5 shadow-sm shrink-0"
-              title={`Currently in ${theme.toUpperCase()} mode. Click to toggle light/dark.`}
-            >
-              {theme === 'dark' ? (
-                <>
-                  <Sun className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden sm:inline text-[11px] font-medium text-slate-300">Light</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-3.5 h-3.5 text-sky-600" />
-                  <span className="hidden sm:inline text-[11px] font-medium text-slate-700">Dark</span>
-                </>
-              )}
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <span className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.63rem] font-bold md:flex ${isConnected ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300'}`} title={isConnected ? 'Live slot synchronization is connected' : 'Reconnecting to live synchronization'}>
+              <Activity className={`h-3 w-3 ${isConnected ? 'animate-pulse' : ''}`} />
+              {isConnected ? 'Live' : 'Offline'}
+            </span>
+            <button onClick={toggleTheme} className="hidden rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+              {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-300" /> : <Moon className="h-4 w-4 text-indigo-500" />}
             </button>
-
-            {/* Notification Bell */}
             {user && (
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="relative p-2 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition shrink-0"
-                title="View Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
+              <button onClick={() => setDrawerOpen(true)} className="relative rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" title="Open notifications">
+                <Bell className="h-4 w-4" />
+                {unreadCount > 0 && <span className="absolute right-1 top-1 grid h-3.5 min-w-3.5 place-items-center rounded-full bg-rose-500 px-0.5 text-[0.55rem] font-extrabold text-white">{unreadCount > 9 ? '9+' : unreadCount}</span>}
               </button>
             )}
-
-            {/* User Chip & Logout */}
             {user ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800 shrink-0">
-                <div className="hidden sm:block text-right max-w-[130px]">
-                  <div className="text-xs font-semibold text-slate-900 dark:text-slate-200 truncate">{user.name}</div>
-                  <div className="text-[10px] uppercase font-bold text-sky-600 dark:text-indigo-400 tracking-wider truncate">
-                    {user.role.replace('_', ' ')}
-                  </div>
+              <div className="ml-1 flex items-center gap-2 border-l border-slate-200 pl-2 dark:border-slate-700/70">
+                <div className="hidden text-right sm:block">
+                  <div className="max-w-[130px] truncate text-[0.7rem] font-bold text-slate-800 dark:text-slate-100">{user.name}</div>
+                  <div className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-indigo-500 dark:text-indigo-300">{user.role.replace('_', ' ')}</div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-sky-50 dark:bg-indigo-600/30 border border-sky-200 dark:border-indigo-500/40 text-sky-700 dark:text-indigo-300 flex items-center justify-center text-xs font-bold shrink-0">
-                  {user.name.charAt(0)}
-                </div>
-                <button
-                  onClick={handleLogout}
-                  title="Sign out"
-                  className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition ml-1 shrink-0"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
+                <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-xs font-extrabold text-white shadow-sm shadow-indigo-500/20">{user.name.charAt(0).toUpperCase()}</div>
+                <button onClick={handleLogout} className="hidden rounded-lg p-1.5 text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 sm:block dark:hover:bg-rose-500/10" title="Sign out"><LogOut className="h-3.5 w-3.5" /></button>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="px-4 py-1.5 rounded-full bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white text-xs font-semibold shadow-sm shadow-sky-600/20 transition shrink-0"
-              >
-                Sign In
-              </Link>
+              <Link to="/login" className="btn-primary px-3 py-2 text-[0.7rem]"><Sparkles className="h-3.5 w-3.5" /> Sign in</Link>
             )}
           </div>
         </div>
 
-        {/* Mobile / Tablet Navigation Bar */}
-        <div className="xl:hidden border-t border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center overflow-x-auto gap-2 text-xs no-scrollbar">
-          {navLinks
-            .filter((l) => !user || l.roles.includes(user.role))
-            .map((link) => {
-              const Icon = link.icon;
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-full shrink-0 font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-sky-600 text-white dark:bg-indigo-600 dark:text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 transition-transform duration-200 ease-out group-hover:scale-125 ${isActive ? 'text-white' : link.color}`} />
-                  <span>{link.name}</span>
-                </Link>
-              );
-            })}
-        </div>
+        <nav className="no-scrollbar flex gap-1 overflow-x-auto border-t border-slate-200/70 px-4 py-2 lg:hidden dark:border-slate-800/80" aria-label="Mobile navigation">
+          {visibleLinks.map(({ name, path, icon: Icon }) => (
+            <Link key={path} to={path} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[0.67rem] font-bold transition ${isCurrent(path) ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'}`}>
+              <Icon className="h-3.5 w-3.5" />{name}
+            </Link>
+          ))}
+        </nav>
       </header>
-
       <NotificationDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </>
   );

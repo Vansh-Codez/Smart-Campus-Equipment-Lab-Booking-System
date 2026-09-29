@@ -8,11 +8,11 @@ export const ToastContainer: React.FC = () => {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 max-w-sm w-full pointer-events-none">
+    <div className="pointer-events-none fixed bottom-5 right-4 z-50 flex w-[calc(100%-2rem)] max-w-sm flex-col space-y-3 sm:right-5">
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`pointer-events-auto p-4 rounded-xl shadow-xl border backdrop-blur-md flex items-start gap-3 transition-all duration-300 animate-slide-in ${
+          className={`pointer-events-auto flex items-start gap-3 rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-all duration-300 animate-slide-in ${
             toast.type === 'success'
               ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-100'
               : toast.type === 'warning'

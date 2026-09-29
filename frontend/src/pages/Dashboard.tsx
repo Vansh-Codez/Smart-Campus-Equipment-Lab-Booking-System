@@ -1,23 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import { Equipment, Booking } from '../types';
 import {
-  Cpu,
-  Layers,
-  Calendar,
-  ClipboardList,
-  AlertTriangle,
-  Clock,
+  ArrowUpRight,
+  CalendarDays,
   CheckCircle2,
-  ArrowRight,
-  TrendingUp,
-  ShieldCheck,
-  Zap,
-  HardDrive,
+  ChevronRight,
+  Clock3,
+  Cpu,
+  FlaskConical,
+  Layers3,
+  PackageCheck,
+  RotateCw,
   Sparkles,
+  TriangleAlert,
 } from 'lucide-react';
+
+const statusTone = (status: string) => {
+  if (status === 'available') return 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/30';
+  if (status === 'booked') return 'bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/30';
+  if (status === 'issued') return 'bg-cyan-50 text-cyan-700 ring-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:ring-cyan-500/30';
+  return 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/30';
+};
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -28,21 +34,18 @@ export const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const [eq, myB] = await Promise.all([
-          api.getEquipment(),
-          api.getMyBookings().catch(() => []),
-        ]);
-        setEquipmentList(eq);
-        setMyBookings(myB);
-
+        const [equipment, bookings] = await Promise.all([api.getEquipment(), api.getMyBookings().catch(() => [])]);
+        setEquipmentList(equipment);
+        setMyBookings(bookings);
         if (user?.role === 'lab_assistant' || user?.role === 'admin') {
-          const queue = await api.getQueue('pending').catch(() => []);
-          setQueueBookings(queue);
+          setQueueBookings(await api.getQueue('pending').catch(() => []));
+        } else {
+          setQueueBookings([]);
         }
-      } catch (err) {
-        console.error('Failed to load dashboard data', err);
+      } catch (error) {
+        console.error('Failed to load dashboard data', error);
       } finally {
         setLoading(false);
       }
@@ -50,259 +53,75 @@ export const Dashboard: React.FC = () => {
     fetchData();
   }, [user]);
 
-  const activeBooking = myBookings.find((b) => b.status === 'checked_out' || b.status === 'approved');
-  const availableCount = equipmentList.filter((e) => e.status === 'available').length;
-  const inUseCount = equipmentList.filter((e) => e.status === 'issued' || e.status === 'booked').length;
-  const maintenanceCount = equipmentList.filter((e) => e.status === 'under_maintenance').length;
-  const overdueCount = equipmentList.filter((e) => e.status === 'overdue').length;
+  const activeBooking = useMemo(() => myBookings.find((booking) => ['checked_out', 'approved'].includes(booking.status)), [myBookings]);
+  const stats = [
+    { label: 'Available now', value: equipmentList.filter((item) => item.status === 'available').length, note: 'Ready for reservation', icon: CheckCircle2, tone: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-300' },
+    { label: 'Active reservations', value: equipmentList.filter((item) => ['issued', 'booked'].includes(item.status)).length, note: 'In use across campus', icon: Clock3, tone: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-500/10 dark:text-indigo-300' },
+    { label: 'In maintenance', value: equipmentList.filter((item) => item.status === 'under_maintenance').length, note: 'Calibration or repair', icon: RotateCw, tone: 'text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-300' },
+    { label: 'Overdue items', value: equipmentList.filter((item) => item.status === 'overdue').length, note: equipmentList.some((item) => item.status === 'overdue') ? 'Needs attention' : 'Everything on track', icon: TriangleAlert, tone: 'text-rose-600 bg-rose-50 dark:bg-rose-500/10 dark:text-rose-300' },
+  ];
+
+  const firstName = user?.name?.split(' ')[0] || 'there';
+  const roleCopy = user?.role === 'student'
+    ? 'Find the right resource, choose a clear time window, and keep your academic work moving.'
+    : user?.role === 'lab_assistant'
+      ? 'Keep requisitions moving, make handoffs clear, and keep every resource ready for the next session.'
+      : 'See the pulse of campus infrastructure and make informed decisions from one operational workspace.';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Welcome Hero Banner - Academic Blue / Blueprint Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 dark:from-indigo-950/90 dark:via-slate-900 dark:to-slate-950 border border-sky-600/30 dark:border-indigo-500/20 p-6 sm:p-10 shadow-xl campus-hero backdrop-blur-md">
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-white text-xs font-semibold backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-            <span>Academic Term 2026-27 Active</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-sky-200 to-white">{user?.name}</span>
-          </h1>
-
-          <p className="text-sm text-sky-100/90 dark:text-slate-300 leading-relaxed font-normal">
-            {user?.role === 'student' &&
-              'Reserve academic computing rigs, software engineering pods, network analyzers, science apparatus, and workshop equipment across BVS & MMS blocks for your coursework and research.'}
-            {user?.role === 'lab_assistant' &&
-              'Manage lab requisitions, inspect check-ins, record condition notes, and maintain equipment availability across all campus labs.'}
-            {user?.role === 'admin' &&
-              'Oversee campus-wide inventory master data, evaluate equipment utilization analytics, and manage academic lab roles.'}
-          </p>
-
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Link
-              to="/directory"
-              className="group px-5 py-2.5 rounded-full bg-white text-sky-950 hover:bg-sky-50 font-bold text-xs shadow-md shadow-black/10 flex items-center gap-2 transition hover:scale-105"
-            >
-              <Layers className="w-4 h-4 text-sky-600 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
-              <span className="text-sky-950 font-bold">Explore Resource Directory</span>
-            </Link>
-
-            <Link
-              to="/calendar"
-              className="group px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/25 text-xs font-semibold backdrop-blur-sm flex items-center gap-2 transition hover:scale-105"
-            >
-              <Calendar className="w-4 h-4 text-sky-200 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
-              <span>View Slot Availability</span>
-            </Link>
-
-            {(user?.role === 'lab_assistant' || user?.role === 'admin') && (
-              <Link
-                to="/assistant/queue"
-                className="group px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-950/20 flex items-center gap-2 transition hover:scale-105"
-              >
-                <ClipboardList className="w-4 h-4 text-emerald-100 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
-                <span className="text-white font-bold">Requisitions Queue ({queueBookings.length})</span>
-              </Link>
-            )}
-          </div>
-        </div>
-
-        {/* Decorative Grid Graphic */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-15 hidden md:flex items-center justify-center pointer-events-none">
-          <Cpu className="w-72 h-72 text-cyan-200" />
-        </div>
-      </div>
-
-      {/* KPI Stats Grid - High-Contrast Elevated Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-emerald-300 dark:hover:border-emerald-500/40 transition duration-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Available Equipment</span>
-            <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/20 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
+    <div className="page-container space-y-7">
+      <section className="relative overflow-hidden rounded-[1.65rem] border border-indigo-300/25 bg-[#121936] px-6 py-7 text-white shadow-[0_28px_70px_-34px_rgba(49,46,129,0.85)] sm:px-9 sm:py-9">
+        <div className="absolute -right-24 -top-32 h-80 w-80 rounded-full bg-cyan-400/15 blur-3xl" />
+        <div className="absolute -bottom-40 left-1/3 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
+        <div className="relative grid gap-8 lg:grid-cols-[1fr_310px] lg:items-center">
+          <div className="max-w-2xl">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-indigo-100">
+              <Sparkles className="h-3.5 w-3.5 text-cyan-300" /> Academic term 2026–27
+            </div>
+            <h1 className="text-3xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">Good to see you, <span className="bg-gradient-to-r from-cyan-200 via-indigo-200 to-white bg-clip-text text-transparent">{firstName}.</span></h1>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-indigo-100/75">{roleCopy}</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/directory" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-extrabold text-indigo-950 shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-indigo-50"><Layers3 className="h-4 w-4 text-indigo-600" /> Explore resources <ArrowUpRight className="h-3.5 w-3.5" /></Link>
+              <Link to="/calendar" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"><CalendarDays className="h-4 w-4 text-cyan-200" /> Book a time slot</Link>
+              {(user?.role === 'lab_assistant' || user?.role === 'admin') && <Link to="/assistant/queue" className="inline-flex items-center gap-2 rounded-xl border border-emerald-300/25 bg-emerald-400/15 px-4 py-2.5 text-xs font-bold text-emerald-100 transition hover:-translate-y-0.5 hover:bg-emerald-400/25"><PackageCheck className="h-4 w-4" /> Queue <span className="rounded-full bg-emerald-300/20 px-1.5 py-0.5">{queueBookings.length}</span></Link>}
             </div>
           </div>
-          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">{availableCount}</div>
-          <div className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-semibold">
-            <span>Ready for immediate booking</span>
-          </div>
-        </div>
 
-        <div className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-sky-300 dark:hover:border-indigo-500/40 transition duration-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Currently In Use / Booked</span>
-            <div className="w-9 h-9 rounded-full bg-sky-50 text-sky-600 dark:bg-indigo-500/10 dark:text-indigo-400 border border-sky-200/60 dark:border-indigo-500/20 flex items-center justify-center">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">{inUseCount}</div>
-          <div className="mt-2 text-[11px] text-sky-700 dark:text-indigo-400 font-semibold">
-            <span>Active research reservations</span>
-          </div>
-        </div>
-
-        <div className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-amber-300 dark:hover:border-amber-500/40 transition duration-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Under Maintenance</span>
-            <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200/60 dark:border-amber-500/20 flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">{maintenanceCount}</div>
-          <div className="mt-2 text-[11px] text-amber-700 dark:text-amber-400 font-semibold">
-            <span>Calibration or repairs active</span>
-          </div>
-        </div>
-
-        <div className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-rose-300 dark:hover:border-rose-500/40 transition duration-200">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Overdue Items</span>
-            <div className="w-9 h-9 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200/60 dark:border-rose-500/20 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">{overdueCount}</div>
-          <div className="mt-2 text-[11px] text-rose-700 dark:text-rose-400 font-semibold">
-            <span>{overdueCount > 0 ? 'Escalations triggered' : 'Zero overdue items'}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Active Requisition / Booking Highlight for Student */}
-      {activeBooking && (
-        <div className="rounded-3xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-slate-200/90 dark:border-indigo-500/30 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)]">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30">
-                <Clock className="w-3.5 h-3.5" />
-                <span>Your Active Equipment Checkout</span>
+          <div className="relative hidden lg:block">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-4 backdrop-blur">
+              <div className="flex items-center justify-between text-[0.65rem] font-bold uppercase tracking-[0.14em] text-indigo-200/70"><span>Campus pulse</span><span className="flex items-center gap-1.5 text-emerald-300"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" /> Live</span></div>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-xl bg-black/15 p-3"><FlaskConical className="h-4 w-4 text-cyan-200" /><div className="mt-4 text-2xl font-extrabold">{equipmentList.length}</div><div className="mt-0.5 text-[0.65rem] text-indigo-100/60">Total resources</div></div>
+                <div className="rounded-xl bg-black/15 p-3"><Cpu className="h-4 w-4 text-indigo-200" /><div className="mt-4 text-2xl font-extrabold">{myBookings.length}</div><div className="mt-0.5 text-[0.65rem] text-indigo-100/60">Your bookings</div></div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                {activeBooking.equipment?.name || `Equipment #${activeBooking.equipment_id}`}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Due by: <span className="text-slate-900 dark:text-white font-semibold">{new Date(activeBooking.end_time).toLocaleString()}</span>
-              </p>
+              <div className="mt-3 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-[0.67rem] text-indigo-100/70"><span className="h-2 w-2 rounded-full bg-cyan-300" /> Inventory and slots sync in real time</div>
             </div>
-            <Link
-              to="/my-bookings"
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white text-xs font-semibold shadow-sm shadow-sky-600/20 transition flex items-center gap-1.5"
-            >
-              <span>View Booking Details & Status</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
+      </section>
+
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+        {stats.map(({ label, value, note, icon: Icon, tone }) => (
+          <div className="metric-card" key={label}>
+            <div className="flex items-start justify-between gap-2"><span className="text-[0.68rem] font-bold leading-4 text-slate-500 dark:text-slate-400">{label}</span><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl ${tone}`}><Icon className="h-4 w-4" /></span></div>
+            <div className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{loading ? '—' : value}</div>
+            <div className="mt-1 text-[0.65rem] font-semibold text-slate-400 dark:text-slate-500">{note}</div>
+          </div>
+        ))}
+      </section>
+
+      {(activeBooking || ((user?.role === 'lab_assistant' || user?.role === 'admin') && queueBookings.length > 0)) && (
+        <section className="grid gap-4 lg:grid-cols-2">
+          {activeBooking && <div className="surface flex items-center justify-between gap-4 p-5"><div className="min-w-0"><div className="eyebrow"><Clock3 className="h-3.5 w-3.5" /> Your active reservation</div><h2 className="mt-2 truncate text-lg font-extrabold text-slate-900 dark:text-white">{activeBooking.equipment?.name || `Equipment #${activeBooking.equipment_id}`}</h2><p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Due {new Date(activeBooking.end_time).toLocaleString()}</p></div><Link to="/my-bookings" className="btn-secondary shrink-0 px-3 py-2 text-[0.68rem]">Details <ChevronRight className="h-3.5 w-3.5" /></Link></div>}
+          {(user?.role === 'lab_assistant' || user?.role === 'admin') && queueBookings.length > 0 && <div className="flex items-center justify-between gap-4 rounded-[1.35rem] border border-amber-200 bg-amber-50/75 p-5 dark:border-amber-500/25 dark:bg-amber-500/10"><div><div className="eyebrow !text-amber-600 dark:!text-amber-300"><PackageCheck className="h-3.5 w-3.5" /> Needs your review</div><h2 className="mt-2 text-lg font-extrabold text-slate-900 dark:text-white">{queueBookings.length} requisition{queueBookings.length === 1 ? '' : 's'} waiting</h2><p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Clear the queue before the next lab session.</p></div><Link to="/assistant/queue" className="btn-primary shrink-0 !border-amber-500 !bg-amber-500 !text-slate-950 !shadow-amber-500/20">Review <ChevronRight className="h-3.5 w-3.5" /></Link></div>}
+        </section>
       )}
 
-      {/* Lab Assistant Pending Queue Action Card */}
-      {(user?.role === 'lab_assistant' || user?.role === 'admin') && queueBookings.length > 0 && (
-        <div className="rounded-3xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-500/30 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)]">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-700 dark:text-amber-400">
-                <ClipboardList className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  {queueBookings.length} Requisition(s) Awaiting Review
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Students have submitted academic justifications requiring faculty or lab assistant approval.
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/assistant/queue"
-              className="px-5 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition"
-            >
-              Process Queue
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* Featured Hardware Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Featured Academic Resources</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Top shared hardware available across campus facilities</p>
-          </div>
-          <Link
-            to="/directory"
-            className="text-xs text-sky-600 dark:text-indigo-400 hover:text-sky-700 dark:hover:text-indigo-300 font-semibold flex items-center gap-1 transition"
-          >
-            <span>View all inventory</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {equipmentList.slice(0, 3).map((item) => (
-            <div
-              key={item.id}
-              className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 overflow-hidden shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:shadow-[0_16px_36px_-4px_rgba(2,132,199,0.12)] hover:border-sky-300/60 transition duration-300 flex flex-col group"
-            >
-              <div className="h-44 bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
-                {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300 opacity-95 dark:opacity-80"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-700">
-                    <Cpu className="w-12 h-12" />
-                  </div>
-                )}
-                <div className="absolute top-3 right-3">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${
-                      item.status === 'available'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/40'
-                        : item.status === 'booked'
-                        ? 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/40'
-                        : item.status === 'issued'
-                        ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/40'
-                        : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
-                    }`}
-                  >
-                    {item.status.replace('_', ' ')}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="text-[11px] font-bold text-sky-600 dark:text-indigo-400 uppercase tracking-wider">
-                    {item.category}
-                  </span>
-                  <h4 className="text-base font-bold text-slate-900 dark:text-white mt-1 group-hover:text-sky-600 dark:group-hover:text-indigo-300 transition line-clamp-1">
-                    {item.name}
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500">
-                    Lab: {item.lab?.name || 'Main Lab'}
-                  </span>
-                  <Link
-                    to={`/calendar?equipment_id=${item.id}`}
-                    className="px-4 py-1.5 rounded-full bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white dark:bg-indigo-600/20 dark:hover:bg-indigo-600 dark:text-indigo-300 dark:hover:text-white text-xs font-semibold border border-sky-200 dark:border-indigo-500/30 transition shadow-sm"
-                  >
-                    Reserve Slot
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <section>
+        <div className="mb-4 flex items-end justify-between gap-4"><div><div className="eyebrow"><Layers3 className="h-3.5 w-3.5" /> Shared inventory</div><h2 className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white">Start with what you need</h2><p className="mt-1 text-xs text-slate-500 dark:text-slate-400">A quick view of resources available across campus labs.</p></div><Link to="/directory" className="hidden items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 sm:flex dark:text-indigo-300">View all <ArrowUpRight className="h-3.5 w-3.5" /></Link></div>
+        {loading ? <div className="grid gap-4 md:grid-cols-3"><div className="surface h-72 animate-pulse" /><div className="surface h-72 animate-pulse" /><div className="surface h-72 animate-pulse" /></div> : <div className="grid gap-4 md:grid-cols-3">{equipmentList.slice(0, 3).map((item) => <article key={item.id} className="surface group overflow-hidden transition hover:-translate-y-1 hover:border-indigo-300/60 dark:hover:border-indigo-500/40"><div className="relative h-40 overflow-hidden bg-slate-100 dark:bg-slate-950">{item.image_url ? <img src={item.image_url} alt={item.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <div className="grid h-full place-items-center bg-gradient-to-br from-indigo-50 to-cyan-50 text-indigo-300 dark:from-indigo-950/40 dark:to-cyan-950/30"><Cpu className="h-12 w-12" /></div>}<span className={`status-badge absolute right-3 top-3 ${statusTone(item.status)}`}>{item.status.replace('_', ' ')}</span></div><div className="p-5"><div className="text-[0.65rem] font-extrabold uppercase tracking-[0.13em] text-indigo-500 dark:text-indigo-300">{item.category}</div><h3 className="mt-1.5 truncate text-base font-extrabold text-slate-900 dark:text-white">{item.name}</h3><p className="mt-1.5 line-clamp-2 min-h-[2.5rem] text-xs leading-5 text-slate-500 dark:text-slate-400">{item.description || 'Ready for academic use across campus.'}</p><div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800"><span className="max-w-[55%] truncate text-[0.68rem] font-semibold text-slate-400">{item.lab?.name || 'Academic lab'}</span><Link to={`/calendar?equipment_id=${item.id}`} className="inline-flex items-center gap-1 text-[0.7rem] font-extrabold text-indigo-600 hover:text-indigo-800 dark:text-indigo-300">Reserve <ChevronRight className="h-3.5 w-3.5" /></Link></div></div></article>)}</div>}
+        <Link to="/directory" className="btn-secondary mt-4 w-full sm:hidden">View full resource library <ArrowUpRight className="h-3.5 w-3.5" /></Link>
+      </section>
     </div>
   );
 };

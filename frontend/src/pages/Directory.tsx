@@ -104,19 +104,23 @@ export const Directory: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="page-container space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Equipment & Lab Directory
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Search and filter all academic hardware, sensors, computing servers, and lab benches across campus.
-        </p>
+      <div className="page-header">
+        <div>
+          <div className="eyebrow"><Layers className="h-3.5 w-3.5" /> Shared resource library</div>
+          <h1 className="page-title">Equipment &amp; lab directory</h1>
+          <p className="page-subtitle">
+            Search and filter academic hardware, sensors, computing servers, and lab benches across campus.
+          </p>
+        </div>
+        <div className="hidden items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[0.68rem] font-bold text-emerald-700 sm:flex dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300">
+          <CheckCircle2 className="h-3.5 w-3.5" /> Inventory is live
+        </div>
       </div>
 
       {/* Filter Bar & Category Tabs */}
-      <div className="space-y-4">
+      <div className="surface space-y-4 p-4 sm:p-5">
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
           {categories.map((cat) => (
@@ -222,7 +226,7 @@ export const Directory: React.FC = () => {
           {equipment.map((item) => (
             <div
               key={item.id}
-              className="rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 overflow-hidden shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:shadow-[0_16px_36px_-4px_rgba(2,132,199,0.12)] hover:border-sky-300/70 transition duration-300 flex flex-col group"
+              className="surface group flex flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:border-indigo-300/70 dark:hover:border-indigo-500/40"
             >
               {/* Card Image Banner */}
               <div className="h-48 bg-slate-100 dark:bg-slate-950 relative overflow-hidden">

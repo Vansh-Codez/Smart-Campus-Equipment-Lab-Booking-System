@@ -295,20 +295,19 @@ export const AdminPanel: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="page-container space-y-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="page-header flex-col lg:flex-row lg:items-end">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Campus Administration & Analytics Hub
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Master inventory management, real-time Recharts analytics, lab configurations, and role control.
+          <div className="eyebrow"><ShieldCheck className="h-3.5 w-3.5" /> Control center</div>
+          <h1 className="page-title">Administration &amp; analytics</h1>
+          <p className="page-subtitle">
+            Manage inventory, labs, access, maintenance, and campus utilization from one operational workspace.
           </p>
         </div>
 
         {/* Tab Buttons - Pill Container */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
+        <div className="no-scrollbar flex max-w-full items-center gap-1.5 overflow-x-auto rounded-2xl border border-slate-200 bg-white/70 p-1 dark:border-slate-800 dark:bg-slate-900/70">
           {[
             { id: 'analytics', label: 'Analytics Dashboard', icon: BarChart3, color: 'text-sky-500' },
             { id: 'equipment', label: 'Master Inventory', icon: Layers, color: 'text-emerald-500' },
@@ -356,7 +355,7 @@ export const AdminPanel: React.FC = () => {
             <>
               {/* Analytics Metric KPI Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="group p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-sky-300 dark:hover:border-sky-500/40 transition duration-200">
+                <div className="metric-card group">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span>Total Hardware Units</span>
                     <Cpu className="w-4 h-4 text-sky-600 dark:text-sky-400 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
@@ -367,7 +366,7 @@ export const AdminPanel: React.FC = () => {
                   <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Across {analytics.kpis.total_labs} campus labs</div>
                 </div>
 
-                <div className="group p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-cyan-300 dark:hover:border-cyan-500/40 transition duration-200">
+                <div className="metric-card group">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span>Equipment Utilization</span>
                     <Percent className="w-4 h-4 text-cyan-600 dark:text-cyan-400 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
@@ -380,7 +379,7 @@ export const AdminPanel: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="group p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-rose-300 dark:hover:border-rose-500/40 transition duration-200">
+                <div className="metric-card group">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span>Overdue Return Rate</span>
                     <TrendingUp className="w-4 h-4 text-rose-600 dark:text-rose-400 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />
@@ -393,7 +392,7 @@ export const AdminPanel: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="group p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-amber-300 dark:hover:border-amber-500/40 transition duration-200">
+                <div className="metric-card group">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span>Pending Requisitions</span>
                     <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400 transition-transform duration-200 ease-out group-hover:scale-125 group-hover:-translate-y-0.5" />

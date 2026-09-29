@@ -22,85 +22,30 @@ export function App() {
       <AuthProvider>
         <WebSocketProvider>
           <BrowserRouter>
-            <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+            <div className="app-shell min-h-screen flex flex-col font-sans">
               <QuickDemoBar />
               <Navbar />
-              <main className="flex-1 pb-16">
+              <main className="app-main">
                 <Routes>
-                  {/* Public Authentication Route */}
                   <Route path="/login" element={<Login />} />
-
-                  {/* Protected Routes */}
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/directory"
-                    element={
-                      <ProtectedRoute>
-                        <Directory />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/calendar"
-                    element={
-                      <ProtectedRoute>
-                        <BookingCalendar />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/my-bookings"
-                    element={
-                      <ProtectedRoute>
-                        <MyBookings />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/assistant/queue"
-                    element={
-                      <ProtectedRoute allowedRoles={['lab_assistant', 'admin']}>
-                        <LabAssistantQueue />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin"
-                    element={
-                      <ProtectedRoute allowedRoles={['admin']}>
-                        <AdminPanel />
-                      </ProtectedRoute>
-                    }
-                  />
-
-                  {/* Fallback */}
+                  <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path="/directory" element={<ProtectedRoute><Directory /></ProtectedRoute>} />
+                  <Route path="/calendar" element={<ProtectedRoute><BookingCalendar /></ProtectedRoute>} />
+                  <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+                  <Route path="/assistant/queue" element={<ProtectedRoute allowedRoles={['lab_assistant', 'admin']}><LabAssistantQueue /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminPanel /></ProtectedRoute>} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </main>
 
-              {/* Real-time WebSockets Toast Notification Hub */}
               <ToastContainer />
 
-              {/* Footer */}
-              <footer className="border-t border-slate-800/80 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
-                <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-                  <div>
-                    Smart Campus Equipment & Lab Booking System &copy; 2026. Academic Research Infrastructure.
-                  </div>
-                  <div className="flex items-center gap-4 text-slate-400">
-                    <span>FastAPI + SQLAlchemy</span>
-                    <span>&bull;</span>
-                    <span>React + Vite</span>
-                    <span>&bull;</span>
-                    <span>WebSocket Hub</span>
-                  </div>
+              <footer className="app-footer py-5 text-center text-[11px]">
+                <div className="mx-auto flex w-[min(100%-2rem,1160px)] flex-col items-center justify-between gap-2 sm:flex-row">
+                  <span>Smart Campus Equipment &amp; Lab Booking System · Academic infrastructure, made simple.</span>
+                  <span className="flex items-center gap-3 text-slate-400 dark:text-slate-600">
+                    <span>FastAPI</span><span>•</span><span>React</span><span>•</span><span>Live slot sync</span>
+                  </span>
                 </div>
               </footer>
             </div>

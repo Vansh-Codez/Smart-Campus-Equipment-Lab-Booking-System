@@ -136,15 +136,14 @@ export const LabAssistantQueue: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="page-container space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Lab Assistant Requisitions Queue
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Review incoming student requisitions, inspect physical condition, issue equipment, and process returns.
+          <div className="eyebrow"><ClipboardList className="h-3.5 w-3.5" /> Operations desk</div>
+          <h1 className="page-title">Requisitions queue</h1>
+          <p className="page-subtitle">
+            Review incoming requests, document physical condition, issue equipment, and process returns with confidence.
           </p>
         </div>
 
@@ -197,7 +196,7 @@ export const LabAssistantQueue: React.FC = () => {
             return (
               <div
                 key={item.id}
-                className="rounded-3xl bg-white dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 p-6 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)] hover:border-sky-300/60 transition space-y-4"
+                className="surface space-y-4 p-5 transition hover:-translate-y-0.5 hover:border-indigo-300/60 sm:p-6"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1.5">

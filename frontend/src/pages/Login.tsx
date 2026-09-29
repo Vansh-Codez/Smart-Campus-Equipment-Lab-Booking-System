@@ -121,313 +121,386 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-transparent">
-      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        {/* Left Side Presentation */}
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-50 dark:bg-indigo-500/10 border border-sky-200 dark:border-indigo-500/30 text-sky-700 dark:text-indigo-400 text-xs font-semibold">
-            <Cpu className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
-            <span>Academic IoT, GPU & Lab Infrastructure</span>
+    <main className="relative isolate min-h-[calc(100vh-4rem)] overflow-hidden px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-32 top-10 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl dark:bg-cyan-400/10" />
+        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl dark:bg-indigo-500/10" />
+        <div className="absolute left-1/2 top-0 h-px w-1/2 bg-gradient-to-r from-transparent via-sky-400/30 to-transparent" />
+      </div>
+
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(400px,0.95fr)] lg:gap-14">
+        {/* Product introduction and demo access */}
+        <section className="order-2 flex flex-col justify-center lg:order-1">
+          <div className="mb-7 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-indigo-600 text-white shadow-lg shadow-sky-500/25 ring-4 ring-sky-500/10">
+              <Cpu className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700 dark:text-cyan-300">CampusOS</div>
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]" />
+                Infrastructure online
+              </div>
+            </div>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Smart Campus <br />
-            <span className="bg-gradient-to-r from-sky-600 via-sky-500 to-cyan-500 dark:from-indigo-400 dark:via-cyan-300 dark:to-emerald-400 bg-clip-text text-transparent">
+          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-sky-200/80 bg-sky-50/80 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-sky-700 shadow-sm shadow-sky-900/5 dark:border-cyan-400/20 dark:bg-cyan-400/10 dark:text-cyan-300">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Academic IoT, GPU & Lab Infrastructure
+          </div>
+
+          <h1 className="max-w-2xl text-4xl font-black leading-[1.03] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl lg:text-[3.65rem]">
+            Smart Campus
+            <span className="mt-2 block bg-gradient-to-r from-sky-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent dark:from-indigo-300 dark:via-cyan-300 dark:to-emerald-300">
               Equipment & Lab Booking
             </span>
           </h1>
 
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
-            Eliminating paper registers with real-time conflict-free slot scheduling, automated 24-hour return reminders, and verified student access across departments.
+          <p className="mt-6 max-w-xl text-sm leading-7 text-slate-600 dark:text-slate-400 sm:text-base">
+            One calm, intelligent workspace for conflict-free reservations, verified student access, and every piece of equipment your next breakthrough needs.
           </p>
 
+          <div className="mt-7 grid max-w-xl grid-cols-3 gap-2 border-y border-slate-200/80 py-4 dark:border-slate-800/80 sm:gap-5">
+            <div>
+              <div className="text-lg font-black tracking-tight text-slate-900 dark:text-white">24/7</div>
+              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-500">Live access</div>
+            </div>
+            <div className="border-l border-slate-200/80 pl-3 dark:border-slate-800/80 sm:pl-5">
+              <div className="text-lg font-black tracking-tight text-slate-900 dark:text-white">0-conflict</div>
+              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-500">Scheduling</div>
+            </div>
+            <div className="border-l border-slate-200/80 pl-3 dark:border-slate-800/80 sm:pl-5">
+              <div className="text-lg font-black tracking-tight text-slate-900 dark:text-white">24h</div>
+              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-500">Return nudges</div>
+            </div>
+          </div>
+
           {/* Quick Demo Logins Card */}
-          <div className="p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.05)]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1.5">
-              <span>Instant 1-Click Persona Access:</span>
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div className="mt-7 max-w-xl rounded-[1.65rem] border border-slate-200/90 bg-white/80 p-4 shadow-[0_18px_45px_-25px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-slate-800/90 dark:bg-slate-900/70 sm:p-5">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Instant 1-Click Persona Access</h2>
+                <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Explore the portal with a ready-made workspace.</p>
+              </div>
+              <span className="shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+                Demo mode
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               <button
                 type="button"
                 onClick={() => handleQuickLogin('student')}
-                className="p-3.5 rounded-2xl border border-sky-200/80 bg-sky-50/50 hover:bg-sky-100/60 dark:border-indigo-500/20 dark:bg-indigo-950/20 dark:hover:bg-indigo-900/30 text-left transition group shadow-sm"
+                className="group rounded-2xl border border-sky-200/80 bg-sky-50/60 p-3 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-100/80 hover:shadow-md dark:border-indigo-500/20 dark:bg-indigo-950/25 dark:hover:border-indigo-400/40 dark:hover:bg-indigo-900/30"
               >
-                <div className="flex items-center gap-2 text-sky-700 dark:text-indigo-400 font-semibold text-xs mb-1">
-                  <GraduationCap className="w-4 h-4" />
-                  <span>Student</span>
+                <div className="mb-2 flex items-center justify-between">
+                  <GraduationCap className="h-4 w-4 text-sky-600 dark:text-indigo-300" />
+                  <ArrowRight className="h-3.5 w-3.5 text-sky-400 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-indigo-300" />
                 </div>
-                <div className="text-[11px] text-slate-800 dark:text-slate-300 font-bold">Alex Rivera</div>
-                <div className="text-[10px] text-slate-500">CSE-AIML | 0101CS211001</div>
+                <div className="text-xs font-bold text-sky-900 dark:text-indigo-100">Student</div>
+                <div className="mt-1 text-[10px] font-medium text-slate-500 dark:text-slate-400">CSE-AIML | 0101CS211001</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleQuickLogin('lab_assistant')}
-                className="p-3.5 rounded-2xl border border-emerald-200/80 bg-emerald-50/50 hover:bg-emerald-100/60 dark:border-emerald-500/20 dark:bg-emerald-950/20 dark:hover:bg-emerald-900/30 text-left transition group shadow-sm"
+                className="group rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-3 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-100/80 hover:shadow-md dark:border-emerald-500/20 dark:bg-emerald-950/25 dark:hover:border-emerald-400/40 dark:hover:bg-emerald-900/30"
               >
-                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-semibold text-xs mb-1">
-                  <FlaskConical className="w-4 h-4" />
-                  <span>Lab Assistant</span>
+                <div className="mb-2 flex items-center justify-between">
+                  <FlaskConical className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                  <ArrowRight className="h-3.5 w-3.5 text-emerald-400 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
                 </div>
-                <div className="text-[11px] text-slate-800 dark:text-slate-300 font-bold">Dr. Sarah Chen</div>
-                <div className="text-[10px] text-slate-500">ECE Faculty/Staff</div>
+                <div className="text-xs font-bold text-emerald-900 dark:text-emerald-100">Lab Assistant</div>
+                <div className="mt-1 text-[10px] font-medium text-slate-500 dark:text-slate-400">ECE Faculty/Staff</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleQuickLogin('admin')}
-                className="p-3.5 rounded-2xl border border-purple-200/80 bg-purple-50/50 hover:bg-purple-100/60 dark:border-purple-500/20 dark:bg-purple-950/20 dark:hover:bg-purple-900/30 text-left transition group shadow-sm"
+                className="group rounded-2xl border border-purple-200/80 bg-purple-50/60 p-3 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-purple-300 hover:bg-purple-100/80 hover:shadow-md dark:border-purple-500/20 dark:bg-purple-950/25 dark:hover:border-purple-400/40 dark:hover:bg-purple-900/30"
               >
-                <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400 font-semibold text-xs mb-1">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Admin</span>
+                <div className="mb-2 flex items-center justify-between">
+                  <ShieldCheck className="h-4 w-4 text-purple-600 dark:text-purple-300" />
+                  <ArrowRight className="h-3.5 w-3.5 text-purple-400 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
                 </div>
-                <div className="text-[11px] text-slate-800 dark:text-slate-300 font-bold">Prof. Vance</div>
-                <div className="text-[10px] text-slate-500">Dean / CSE-1</div>
+                <div className="text-xs font-bold text-purple-900 dark:text-purple-100">Admin</div>
+                <div className="mt-1 text-[10px] font-medium text-slate-500 dark:text-slate-400">Dean / CSE-1</div>
               </button>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Right Side Card */}
-        <div className="rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 shadow-[0_4px_25px_-2px_rgba(15,23,42,0.06)]">
-          {pendingApprovalInfo ? (
-            /* Pending Approval Confirmation View */
-            <div className="space-y-5 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/10">
-                <Clock className="w-6 h-6 animate-pulse" />
-              </div>
+        {/* Authentication panel */}
+        <section className="order-1 lg:order-2">
+          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white/90 shadow-[0_28px_80px_-35px_rgba(15,23,42,0.45)] backdrop-blur-2xl dark:border-slate-800/90 dark:bg-slate-900/85">
+            <div className="h-1 w-full bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400" />
+            <div className="p-5 sm:p-8">
+              {pendingApprovalInfo ? (
+                /* Pending Approval Confirmation View */
+                <div className="space-y-5 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700 dark:text-cyan-300">Account request</div>
+                      <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">Your profile is in the verification queue.</div>
+                    </div>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-amber-200 bg-amber-50 text-amber-600 shadow-sm dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400">
+                      <Clock className="h-5 w-5 animate-pulse" />
+                    </div>
+                  </div>
 
-              <div className="text-center space-y-1.5">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Registration Submitted</h3>
-                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30">
-                  <span>Pending Administrator Verification</span>
-                </span>
-              </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300 text-center leading-relaxed">
-                Your request has been queued for verification. The campus administrator will verify your enrollment against official institutional records before granting access.
-              </p>
-
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/80 dark:border-slate-800 space-y-2.5 text-xs">
-                <div className="flex justify-between items-center text-slate-500 dark:text-slate-400">
-                  <span>Applicant:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{pendingApprovalInfo.name}</span>
-                </div>
-                <div className="flex justify-between items-center text-slate-500 dark:text-slate-400">
-                  <span>Email:</span>
-                  <span className="font-mono text-slate-800 dark:text-slate-200 font-medium">{pendingApprovalInfo.email}</span>
-                </div>
-                <div className="flex justify-between items-center text-slate-500 dark:text-slate-400">
-                  <span>Department:</span>
-                  <span className="px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 dark:bg-indigo-500/20 dark:text-indigo-300 font-semibold">
-                    {pendingApprovalInfo.department}
-                  </span>
-                </div>
-                {pendingApprovalInfo.enrollmentNo && (
-                  <div className="flex justify-between items-center text-slate-500 dark:text-slate-400">
-                    <span>Enrollment No:</span>
-                    <span className="font-mono font-bold text-sky-700 dark:text-cyan-300 tracking-wider">
-                      {pendingApprovalInfo.enrollmentNo}
+                  <div>
+                    <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white">Registration Submitted</h2>
+                    <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/20 dark:text-amber-300">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                      Pending Administrator Verification
                     </span>
                   </div>
-                )}
-              </div>
 
-              <div className="p-3.5 rounded-2xl bg-sky-50 dark:bg-indigo-500/10 border border-sky-200 dark:border-indigo-500/20 text-[11px] text-sky-800 dark:text-indigo-300 flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 shrink-0 text-sky-600 dark:text-cyan-400 mt-0.5" />
-                <span>
-                  Tip: You can switch to the <strong>Admin persona</strong> from the 1-click personas on the left to review, verify records, and approve this registration immediately!
-                </span>
-              </div>
+                  <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    Your request has been queued for verification. The campus administrator will verify your enrollment against official institutional records before granting access.
+                  </p>
 
-              <button
-                type="button"
-                onClick={resetToLogin}
-                className="w-full py-2.5 px-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Return to Sign In</span>
-              </button>
-            </div>
-          ) : (
-            /* Regular Login / Register Form */
-            <>
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                  {isRegister ? 'Create Academic Account' : 'Sign In to Campus Portal'}
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsRegister(!isRegister);
-                    setError(null);
-                  }}
-                  className="text-xs text-sky-600 dark:text-indigo-400 hover:text-sky-700 dark:hover:text-indigo-300 font-semibold transition"
-                >
-                  {isRegister ? 'Have an account? Sign in' : 'Need an account? Sign up'}
-                </button>
-              </div>
-
-              {error && (
-                <div className={`mb-4 p-3.5 rounded-2xl border text-xs flex items-start gap-2.5 ${
-                  error.toLowerCase().includes('pending')
-                    ? 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-300'
-                    : 'bg-rose-50 border-rose-200 text-rose-700 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-300'
-                }`}>
-                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
-                  <div>
-                    <div className="font-semibold mb-0.5">
-                      {error.toLowerCase().includes('pending') ? 'Verification Pending' : 'Authentication Error'}
+                  <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4 text-xs dark:border-slate-800 dark:bg-slate-950/70">
+                    <div className="flex items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
+                      <span>Applicant</span>
+                      <span className="text-right font-semibold text-slate-900 dark:text-white">{pendingApprovalInfo.name}</span>
                     </div>
-                    <div>{error}</div>
+                    <div className="flex items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
+                      <span>Email</span>
+                      <span className="max-w-[65%] truncate text-right font-mono font-medium text-slate-800 dark:text-slate-200">{pendingApprovalInfo.email}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
+                      <span>Department</span>
+                      <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-right font-semibold text-sky-700 dark:border-indigo-500/30 dark:bg-indigo-500/20 dark:text-indigo-300">{pendingApprovalInfo.department}</span>
+                    </div>
+                    {pendingApprovalInfo.enrollmentNo && (
+                      <div className="flex items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
+                        <span>Enrollment No.</span>
+                        <span className="font-mono font-bold tracking-wider text-sky-700 dark:text-cyan-300">{pendingApprovalInfo.enrollmentNo}</span>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {isRegister && (
-                  <>
+                  <div className="flex items-start gap-2.5 rounded-2xl border border-sky-200 bg-sky-50/80 p-3.5 text-xs leading-5 text-sky-800 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-300">
+                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-600 dark:text-cyan-400" />
+                    <span>
+                      Tip: You can switch to the <strong>Admin persona</strong> from the 1-click personas on the left to review, verify records, and approve this registration immediately!
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={resetToLogin}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-xs font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Return to Sign In
+                  </button>
+                </div>
+              ) : (
+                /* Regular Login / Register Form */
+                <>
+                  <div className="mb-6 flex items-start justify-between gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                      <div className="mb-2 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700 dark:text-cyan-300">
+                        <Lock className="h-3 w-3" />
+                        Secure campus access
+                      </div>
+                      <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white">
+                        {isRegister ? 'Create Academic Account' : 'Sign In to Campus Portal'}
+                      </h2>
+                    </div>
+                    <div className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300 sm:flex">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/70 p-1 dark:border-slate-800 dark:bg-slate-950/50">
+                    <span className="px-3 py-2 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                      {isRegister ? 'Join your academic workspace' : 'Welcome back, researcher'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsRegister(!isRegister);
+                        setError(null);
+                      }}
+                      className="rounded-lg bg-white px-3 py-2 text-[11px] font-bold text-sky-700 shadow-sm transition hover:text-sky-800 dark:bg-slate-800 dark:text-cyan-300 dark:hover:text-cyan-200"
+                    >
+                      {isRegister ? 'Sign in' : 'Create account'}
+                    </button>
+                  </div>
+
+                  {error && (
+                    <div className={`mb-5 flex items-start gap-2.5 rounded-2xl border p-3.5 text-xs leading-5 ${
+                      error.toLowerCase().includes('pending')
+                        ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300'
+                        : 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300'
+                    }`}>
+                      <AlertTriangle className={`mt-0.5 h-4 w-4 shrink-0 ${error.toLowerCase().includes('pending') ? 'text-amber-500' : 'text-rose-500'}`} />
+                      <div>
+                        <div className="mb-0.5 font-bold">
+                          {error.toLowerCase().includes('pending') ? 'Verification Pending' : 'Authentication Error'}
+                        </div>
+                        <div>{error}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {isRegister && (
+                      <>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Full Name</label>
+                            <div className="relative">
+                              <UserIcon className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                              <input
+                                type="text"
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="e.g. Maya Lin"
+                                className="w-full rounded-xl border border-slate-200/80 bg-slate-50/60 py-3 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Academic Department</label>
+                            <div className="relative">
+                              <Building2 className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                              <select
+                                value={department}
+                                onChange={(e) => setDepartment(e.target.value)}
+                                className="w-full appearance-none rounded-xl border border-slate-200/80 bg-slate-50/60 py-3 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
+                              >
+                                {ACADEMIC_DEPARTMENTS.map((dept) => (
+                                  <option key={dept} value={dept}>
+                                    {dept}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Requested Role</label>
+                          <select
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            className="w-full appearance-none rounded-xl border border-slate-200/80 bg-slate-50/60 px-3 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
+                          >
+                            <option value="student">Student / Researcher</option>
+                            <option value="lab_assistant">Lab Assistant / Faculty</option>
+                            <option value="admin">System Administrator</option>
+                          </select>
+                        </div>
+
+                        {role === 'student' && (
+                          <div>
+                            <div className="mb-1.5 flex items-center justify-between gap-2">
+                              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                                Student Enrollment No. <span className="text-rose-500">*</span>
+                              </label>
+                              <span className="text-[10px] font-semibold text-sky-600 dark:text-cyan-400">Verified by Admin</span>
+                            </div>
+                            <div className="relative">
+                              <CreditCard className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                              <input
+                                type="text"
+                                required
+                                value={enrollmentNo}
+                                onChange={(e) => setEnrollmentNo(e.target.value.toUpperCase())}
+                                placeholder="e.g. 0101CS231015"
+                                className="w-full rounded-xl border border-slate-200/80 bg-slate-50/60 py-3 pl-10 pr-3 font-mono text-xs uppercase tracking-wider text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    <div>
+                      <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Campus Email</label>
                       <div className="relative">
-                        <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                        <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                         <input
-                          type="text"
+                          type="email"
                           required
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder="e.g. Maya Lin"
-                          className="w-full pl-10 pr-3 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="student@campus.edu"
+                          className="w-full rounded-xl border border-slate-200/80 bg-slate-50/60 py-3 pl-10 pr-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Academic Department</label>
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Password</label>
+                        {showPassword && (
+                          <span className="flex items-center gap-1 font-mono text-[10px] font-semibold text-sky-600 dark:text-cyan-400">
+                            <span className="h-1.5 w-1.5 rounded-full bg-sky-500 animate-pulse" />
+                            Peeking (auto-hides)
+                          </span>
+                        )}
+                      </div>
                       <div className="relative">
-                        <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                        <select
-                          value={department}
-                          onChange={(e) => setDepartment(e.target.value)}
-                          className="w-full pl-10 pr-3 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
+                        <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full rounded-xl border border-slate-200/80 bg-slate-50/60 py-3 pl-10 pr-11 font-mono text-sm tracking-wider text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-500/10 dark:border-slate-800 dark:bg-slate-950/60 dark:text-white dark:focus:border-cyan-400 dark:focus:bg-slate-950 dark:focus:ring-cyan-400/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={handlePeekPassword}
+                          onMouseDown={() => {
+                            if (peekTimeoutRef.current) clearTimeout(peekTimeoutRef.current);
+                            setShowPassword(true);
+                          }}
+                          onMouseUp={() => {
+                            if (peekTimeoutRef.current) clearTimeout(peekTimeoutRef.current);
+                            peekTimeoutRef.current = setTimeout(() => setShowPassword(false), 1200);
+                          }}
+                          title={showPassword ? 'Hide password' : 'Peek password for a split second'}
+                          aria-label={showPassword ? 'Hide password' : 'Show password briefly'}
+                          className="absolute right-2 top-2 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200/70 hover:text-sky-600 dark:hover:bg-slate-800/80 dark:hover:text-cyan-300"
                         >
-                          {ACADEMIC_DEPARTMENTS.map((dept) => (
-                            <option key={dept} value={dept}>
-                              {dept}
-                            </option>
-                          ))}
-                        </select>
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-sky-600 dark:text-cyan-400" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Requested Role</label>
-                      <select
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        className="w-full px-3 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
-                      >
-                        <option value="student">Student / Researcher</option>
-                        <option value="lab_assistant">Lab Assistant / Faculty</option>
-                        <option value="admin">System Administrator</option>
-                      </select>
-                    </div>
-
-                    {role === 'student' && (
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                            Student Enrollment No. <span className="text-rose-500">*</span>
-                          </label>
-                          <span className="text-[10px] text-sky-600 dark:text-cyan-400 font-semibold">Verified by Admin</span>
-                        </div>
-                        <div className="relative">
-                          <CreditCard className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                          <input
-                            type="text"
-                            required
-                            value={enrollmentNo}
-                            onChange={(e) => setEnrollmentNo(e.target.value.toUpperCase())}
-                            placeholder="e.g. 0101CS231015"
-                            className="w-full pl-10 pr-3 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono tracking-wider text-xs uppercase shadow-sm"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Campus Email</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="student@campus.edu"
-                      className="w-full pl-10 pr-3 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Password</label>
-                    {showPassword && (
-                      <span className="text-[10px] text-sky-600 dark:text-cyan-400 font-mono flex items-center gap-1 animate-pulse font-semibold">
-                        <span>Peeking (auto-hides)</span>
-                      </span>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2.5 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono tracking-wider shadow-sm"
-                    />
                     <button
-                      type="button"
-                      onClick={handlePeekPassword}
-                      onMouseDown={() => {
-                        if (peekTimeoutRef.current) clearTimeout(peekTimeoutRef.current);
-                        setShowPassword(true);
-                      }}
-                      onMouseUp={() => {
-                        if (peekTimeoutRef.current) clearTimeout(peekTimeoutRef.current);
-                        peekTimeoutRef.current = setTimeout(() => setShowPassword(false), 1200);
-                      }}
-                      title={showPassword ? 'Hide password' : 'Peek password for a split second'}
-                      className="absolute right-2.5 top-2.5 p-1 text-slate-400 hover:text-sky-600 hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-lg transition"
+                      type="submit"
+                      disabled={loading}
+                      aria-busy={loading}
+                      className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 via-indigo-600 to-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 transition duration-200 hover:-translate-y-0.5 hover:from-sky-500 hover:via-indigo-500 hover:to-indigo-500 hover:shadow-xl hover:shadow-indigo-600/25 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                     >
-                      {showPassword ? (
-                        <EyeOff className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
-                      ) : (
-                        <Eye className="w-4 h-4" />
-                      )}
+                      <span>{isRegister ? 'Submit Registration Request' : 'Authenticate & Continue'}</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </button>
-                  </div>
-                </div>
+                  </form>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full mt-2 py-3 px-5 rounded-full bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white font-bold text-sm shadow-md shadow-sky-600/25 flex items-center justify-center gap-2 transition duration-200"
-                >
-                  <span>{isRegister ? 'Submit Registration Request' : 'Authenticate & Continue'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
-            </>
-          )}
-        </div>
+                  <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-medium text-slate-400 dark:text-slate-500">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                    Encrypted access · verified campus identity
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
